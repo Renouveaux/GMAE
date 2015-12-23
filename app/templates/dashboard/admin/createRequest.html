@@ -1,0 +1,153 @@
+<div class="form-horizontal form-box">
+
+		<h4 class="form-box-header">
+			<i class="fa fa-magic"></i> Faire une nouvelle demande de matelas
+		</h4>
+
+		<div class="form-box-content">
+
+			<div class="wizard-steps row">
+				<div class="col-md-4 text-center" ng-class="{active: step == 1}">1. Service</div>
+				<div class="col-md-4 text-center" ng-class="{active: step == 2}">2. Patient</div>
+				<div class="col-md-4 text-center" ng-class="{active: step == 3}">3. Récapitulatif</div>
+			</div>
+
+			<form novalidate name="service">
+				<div ng-show="step == 1" class="step">
+
+
+					<div class="form-group">
+						<div class="col-md-10 col-md-offset-1">
+							<p>Il vous est possible de faire une demande pour vos collègues en leur absence, mais aussi quand vous vous occupez de plusieurs service. Merci alors de valider le service pour lequel vous souhaitez demander un matelas</p>
+						</div>
+					</div>
+
+					<div class="form-group" ng-class="{'has-error': service.currentServices.$invalid}">
+						<label class="control-label col-md-2"><strong>Service</strong></label>
+						<div class="col-md-10">
+							<select class="form-control" ng-model="currentServices" ng-options="data._id as data.name for data in services" ng-change="selectService()" required name="currentServices"></select>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-md-10 col-md-offset-1">
+							<p>Si vous faite une demande pour un autre service que le votre, indiquez votre email afin d'avoir les retours d'informations concernant le matelas qui sera distribué. Le cadre du service recevra aussi ces informations.</p>
+						</div>
+					</div>
+
+					<div class="form-group" ng-class="{'has-error': service.mail.$invalid}">
+						<label class="control-label col-md-2"><strong>Email</strong></label>
+						<div class="col-md-10">
+							<input type="text" ng-model="temp.email" class="form-control" name="mail" required>
+						</div>
+					</div>
+
+					<div class="form-group form-actions">
+						<div class="col-md-4 col-md-offset-8">
+							<button class="btn btn-success" ng-click="nextStep()" ng-disabled="service.$invalid">Suivant</button>
+						</div>
+					</div>
+
+				</div>
+			</form>
+
+			<form novalidate name="patient">
+				<div ng-show="step == 2" class="step">
+
+					<div class="form-group">
+						<div class="col-md-10 col-md-offset-1">
+							<span>La totalitée des informations demandées doivent être renseignées</span>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-md-4">
+							<div class="input-group" ng-class="{'has-error': patient.civility.$invalid}">
+								<span class="input-group-addon">Civilité</span>
+								<select class="form-control ng-pristine ng-valid" ng-model="formData.civility" name="civility" required>
+									<option value="M." selected="">M.</option>
+									<option value="Mme">Mme</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="input-group" ng-class="{'has-error': patient.name.$invalid}">
+								<span class="input-group-addon">Nom</span>
+								<input type="text" ng-model="formPatient.name" class="form-control" name="name" ng-minlength="2" required>
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="input-group" ng-class="{'has-error': patient.lastname.$invalid}">
+								<span class="input-group-addon">Prénom</span>
+								<input type="text" ng-model="formPatient.lastname" class="form-control" ng-minlength="2" name="lastname" required>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-6">
+							<div class="input-group" ng-class="{'has-error': patient.braden.$invalid}">
+								<span class="input-group-addon">Score de Braden</span>
+								<input type="number" ng-model="patientData.braden" class="form-control ng-pristine ng-invalid ng-invalid-required" name="braden" required min="0" max="23">
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="input-group" ng-class="{'has-error': patient.room.$invalid}">
+								<span class="input-group-addon">chambre</span>
+								<input type="number" ng-model="patientData.room" class="form-control ng-pristine ng-invalid ng-invalid-required" name="room" required>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group form-actions">
+						<div class="col-md-4 col-md-offset-2">
+							<button class="btn btn-info" ng-click="prevStep()">Précédent</button>
+						</div>
+						<div class="col-md-4 col-md-offset-2">
+							<button class="btn btn-success" ng-click="nextStep(); combine();" ng-disabled="patient.$invalid">Suivant</button>
+						</div>
+					</div>
+
+				</div>
+			</form>
+			<form novalidate name="verify">
+				<div ng-show="step == 3" class="step">
+
+					<div class="form-group">
+						<div class="col-md-10 col-md-offset-1">
+							<p>Merci de trouver le récapitulatif de votre demande. </p>
+							<p>Votre demande n'a pas encore été soumise, si les informations saisies sont corrects, vous pouvez procéder à l'envoi, sinon, vous avez la possibilité de modifier vos informations en cliquant sur le bouton précédent.</p>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-md-10 col-md-offset-1" style="font-size: 20px;">
+							<p>Demande de matelas pour le service de <strong>{{temp.name}}</strong>.</p>
+							<p>Le patient est <strong>{{formData.civility}}</strong> <strong>{{formData.name}}</strong> présent en chambre <strong>{{patientData.room}}</strong> avec un score de Braden de <strong>{{patientData.braden}}</strong></p>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-md-10 col-md-offset-1">
+							<label for="">Vous pouvez laisser des informations complémentaires</label>
+							<div text-angular ng-model="formData.information"></div>
+							<div class="clearfix"></div>
+						</div>
+					</div>
+
+					<div class="form-group form-actions">
+						<div class="col-md-4 col-md-offset-2">
+							<button class="btn btn-info" ng-click="prevStep()">Précédent</button>
+						</div>
+						<div class="col-md-4 col-md-offset-2">
+							<button class="btn btn-success" ng-click="submitForm()">Envoyer</button>
+						</div>
+					</div>
+
+				</div>
+			</form>
+
+
+
+		</div>
+
+	</div>

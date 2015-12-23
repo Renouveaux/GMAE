@@ -1,0 +1,50 @@
+
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" ng-click="close()">×</button>
+        <h4>Information sur la demande faite le {{data.date | date:'dd/MM/yyyy'}}</h4>
+    </div>
+
+    <div class="media push clearfix">
+
+        <div class="col-md-12">
+
+            <span class="pull-left col-md-3">
+                <i class="gi gi-big" ng-class="{'gi-user': data.patients.civility == 'M.', 'gi-girl': data.patients.civility == 'Mme'}"></i>
+            </span>
+
+            <div class="media-body col-md-4">
+                <h4 class="media-heading">{{data.patients.civility}} {{data.patients.name}}</h4>
+                <p><em>Score de Braden :<em> <b>{{data.patients.patientData[0].braden}}</b></p>
+                <p><em>Chambre :</em> <b>{{data.patients.patientData[0].room}}</b></p>
+
+                <p><em>Demandeur : </em> <b>{{data.users.lastname}} {{data.users.name}}</b> </p>
+                <p><em>Status de la demande : </em> <b>{{data.states.name}}</b> </p>
+            </div>
+            
+            <div class="media-body col-md-4" ng-if="!data.hire">
+                <h4 class="media-heading">HDPMB</h4>
+                <p><em>Moteur :<em> <b>{{data.engines.engineProperties.model}} #{{data.engines.label}}</b></p>
+                <p><em>Housse :</em> <b>{{data.slipcovers.label}}</b></p>
+
+                <p><em>Utilisé depuis :</em> <b><time-ago from-time='{{data.date}}'></time-ago></b></p>
+            </div> 
+
+            <div class="media-body col-md-4" ng-if="data.hire">
+                <h4 class="media-heading">Location</h4>
+                <p><em>Commande :<em> <b>{{data.hire.cpage}}</b></p>
+                <p><em>Bon de livraison :</em> <b>{{data.hire.delivery}}</b></p>
+                <p><em>Numéro de prêt :</em> <b>{{data.hire.loan}}</b></p>
+
+                <p><em>Utilisé depuis :</em> <b><time-ago from-time='{{data.hire.dateIn}}'></time-ago></b></p>
+            </div> 
+
+        </div>
+
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-danger" ng-click="close()">Fermer</button>
+    </div>
+
+</div>

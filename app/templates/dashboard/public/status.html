@@ -1,0 +1,44 @@
+
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" ng-click="close()">×</button>
+        <h4>Information sur la demande faite le {{data.date | date:'dd/MM/yyyy'}}</h4>
+    </div>
+
+    <div class="media media-hover push clearfix">
+
+        <div class="col-md-12">
+
+            <span class="pull-left col-md-3">
+                <i class="gi gi-big" ng-class="{'gi-user': data.patients.civility == 'M.', 'gi-girl': data.patients.civility == 'Mme'}"></i>
+            </span>
+
+            <div class="media-body col-md-4">
+                <h4 class="media-heading">{{data.patients.civility}} {{data.patients.name}}</h4>
+                <p><em>Score de Braden :<em> <b>{{data.patients.patientData[0].braden}}</b></p>
+                <p><em>Chambre :</em> <b>{{data.patients.patientData[0].room}}</b></p>
+
+                <p><em>Demandeur : </em> <b>{{data.users.lastname}} {{data.users.name}}</b> </p>
+                <p><em>Status de la demande : </em> <b>{{data.states.name}}</b> </p>
+            </div>
+
+            <div class="media-body col-md-4" ng-if="data.states.value == '7'">
+            <h4 class="media-heading">Annuler <i class="fa fa-eraser"></i></h4>
+               <p>Cette demande n'à pas encore été traitée, vous pouvez encore l'annuler si besoin</p>
+               <button class="btn btn-warning" ng-click="cancel()">Annuler</button>
+            </div>
+
+        </div>
+
+        
+    </div>
+
+    <div class="media media-hover push clearfix" ng-if="data.patients.information">
+        <h5>Message laissé lors de la demande</h5>
+        <span ng-bind-html="data.patients.information"></span>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-danger" ng-click="close()">Fermer</button>
+    </div>
+</div>

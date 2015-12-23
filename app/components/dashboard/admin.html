@@ -1,0 +1,266 @@
+<div class="row">
+
+	<div class="col-sm-3">
+		
+		<h4 class="alert animation-stretchRight" ng-class="(slipcovers | filter: 'modena'| filter:{states : { value :'4'} }: strict).length == 0 ? 'alert-danger' : 'alert-success'">Housses Modena 
+			<a class="btn box" href="#/manage/slipcover">{{(slipcovers | filter: 'modena'| filter: 'En Stock').length}}</a>
+		</h4>
+
+		<div class="dash-tile animation-stretchRight">
+			<div class="dash-tile-header">
+				<div class="dash-tile-options hide">
+					<a href="javascript:void(0)" class="btn btn-default" tooltip="Manage Orders" title="Manage Orders"><i class="fa fa-gear"></i></a>
+				</div>
+				<i class="fa fa-cogs"></i> Moteurs Modena
+			</div>
+			<div class="dash-tile-content">
+				<table class="table table-hover" role="grid">
+					<thead>
+						<tr>
+							<th>Label</th>
+							<th class="hidden-xs hidden-sm hidden-md">Service</th>
+							<th class="hidden-xs hidden-sm hidden-md">Chambre</th>
+							<th>&nbsp;</th>
+						</tr>
+					</thead>
+					<tbody>
+
+						<tr ng-repeat="item in combined = modena.concat(engine) | filter: 'modena' | orderBy : 'label'" ng-click="openInfo(item)">
+							<td data-title="'Label'"><span class="label label-success"># {{item.engines.label}} {{item.label}}</span></td>
+							<td class="hidden-xs hidden-sm hidden-md" data-title="'Service'">{{item.patients.patientData[0].services.name}}</td>
+							<td class="hidden-xs hidden-sm hidden-md" data-title="'Chambre'"><span class="label label-info">{{item.patients.patientData[0].room}}</span></td>
+							<td data-title="'Status'" ><span class="badge badge-{{item.states.style}}">&nbsp;</span></td>
+						</tr>
+
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<ul class="nav-dash">
+			<li>
+				<a href="javascript:void(0)" uib-tooltip="Ajouter une demande" class="animation-fadeIn" ng-click="createRequest()">
+					<i class="fa fa-plus"></i>
+				</a>
+			</li>
+		</ul>
+		
+	</div>
+
+
+
+
+
+
+	<div class="col-sm-6">
+
+		<!-- _______________________________________ Demande(s) non traitée(s) _________________________________________ -->
+
+		<div class="dataTables_wrapper form-inline no-footer animation-fadeInQuick" ng-show="filteredNew.length > 0">
+			<h4 class="alert alert-warning">Demande(s) non traitée(s) 
+				<span class="btn box">{{filteredNew.length}}</span>
+			</h4>
+
+			<table class="table table-striped table-bordered table-hover dataTable no-footer" role="grid">
+				<thead>
+					<tr role="row">
+						<th><i class="fa fa-calendar"></i> Date</th>
+						<th class="text-center"><i class="fa fa-user"></i> Demandeur</th>
+						<th><i class="fa fa-user-md"></i> Service</th>
+						<th><i class="fa fa-wheelchair"></i> Patient</th>
+						<th><i class="fa fa-bed"></i> Chambre</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr role="row" ng-repeat="item in filteredNew = (important | filter: {states : { value :'7'} }: strict)" ng-click="untreat(item)">
+						<td class="text-center">{{item.date | date:'dd/MM/yyyy'}}</td>
+						<td class="text-center">{{item.users.pseudo | uppercase}}</td>
+						<td>{{item.patients.patientData[0].services.name}}</td>
+						<td>{{item.patients.name | uppercase}}</td>
+						<td class="text-center"><span class="label label-info">{{item.patients.patientData[0].room}}</span></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<!-- _______________________________________ Demande(s) de reprise _________________________________________ -->
+
+		<div class="dataTables_wrapper form-inline no-footer animation-fadeInQuick" ng-show="filteredRecovery.length > 0">
+			<h4 class="alert alert-warning">Demande(s) de reprise
+				<span class="btn box">{{filteredRecovery.length}}</span>
+			</h4>
+
+			<table class="table table-striped table-bordered table-hover dataTable no-footer" role="grid">
+				<thead>
+					<tr role="row">
+						<th><i class="fa fa-calendar"></i> Date</th>
+						<th><i class="fa fa-user-md"></i> Service</th>
+						<th><i class="fa fa-wheelchair"></i> Patient</th>
+						<th><i class="fa fa-bed"></i> Chambre</th>
+						<th><i class="fa fa-shopping-cart"></i> Location</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr role="row" ng-repeat="item in filteredRecovery = (important | filter: {states : { value :'10'} }: strict)" ng-click="recovery(item)">
+						<td class="text-center">{{item.date | date:'dd/MM/yyyy'}}</td>
+						<td>{{item.users.services.name}}</td>
+						<td>{{item.patients.name | uppercase}}</td>
+						<td class="text-center"><span class="label label-info">{{item.patients.patientData[0].room}}</span></td>
+						<td class="text-center" ng-if="item.hire == null"><i class="fa fa-square-o"></i></td>
+						<td class="text-center" ng-if="item.hire != null"><i class="fa fa-check-square-o"></i></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<!-- _______________________________________ Attente réception _________________________________________ -->
+
+		<div class="dataTables_wrapper form-inline no-footer animation-fadeInQuick" ng-show="filteredInwait.length > 0">
+			<h4 class="alert alert-warning">Attente Réception
+				<span class="btn box">{{filteredInwait.length}}</span>
+			</h4>
+
+			<table class="table table-striped table-bordered table-hover dataTable no-footer" role="grid">
+				<thead>
+					<tr role="row">
+						<th><i class="gi gi-notes"></i> CPAGE</th>
+						<th class="text-center"><i class="fa fa-user"></i> Demandeur</th>
+						<th><i class="fa fa-user-md"></i> Service</th>
+						<th><i class="fa fa-calendar"></i> Demande</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr role="row" ng-repeat="item in filteredInwait = (important | filter: {states : { value :'13'} }: strict)" ng-click="delivery(item)">
+						<td class="text-center">{{item.hire.cpage}}</td>
+						<td class="text-center">{{item.users.pseudo | uppercase}}</td>
+						<td class="text-center">{{item.patients.patientData[0].services.name}}</td>
+						<td>{{item.date | date:'dd/MM/yyyy'}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<!-- _______________________________________ Attente de reprise _________________________________________ -->
+
+
+		<div class="dataTables_wrapper form-inline no-footer animation-fadeInQuick" ng-show="filteredWaiting.length > 0">
+			<h4 class="alert alert-warning">Attente de reprise
+				<span class="btn box">{{filteredWaiting.length}}</span>
+			</h4>
+
+			<table class="table table-striped table-bordered table-hover dataTable no-footer" role="grid">
+				<thead>
+					<tr role="row">
+						<th><i class="gi gi-notes"></i> CPAGE</th>
+						<th><i class="fa fa-user-md"></i> Service</th>
+						<th><i class="fa fa-bolt"></i> N° de prêt</th>
+						<th><i class="fa fa-truck"></i> Bon de livraison</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr role="row" ng-repeat="item in filteredWaiting = (important | filter: {states : { value :'14'} }: strict)" ng-click="recovered(item)">
+						<td class="text-center">{{item.hire.cpage}}</td>
+						<td class="text-center">{{item.patients.patientData[0].services.name}}</td>
+						<td class="text-center"><span class="label label-danger">{{item.hire.loan}}</span></td>
+						<td>{{item.hire.delivery}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+
+
+
+
+
+	</div>
+
+	<!-- Column 2 of Row 3 -->
+	<div class="col-sm-3">
+
+		<h4 class="alert animation-stretchLeft" ng-class="(slipcovers | filter:'nimbus' | filter:{states : { value :'4'} }: strict).length == 0 ? 'alert-danger' : 'alert-success'" >Housses Nimbus 
+			<a class="btn box" href="#/manage/slipcover">{{(slipcovers | filter:'nimbus' | filter:'En Stock').length}}</a>
+		</h4>
+
+		<div class="dash-tile animation-stretchLeft">
+			<div class="dash-tile-header">
+				<div class="dash-tile-options hide">
+					<a href="javascript:void(0)" class="btn btn-default" tooltip="Manage Orders" title="Manage Orders"><i class="fa fa-gear"></i></a>
+				</div>				
+				<i class="fa fa-cogs"></i> Moteurs Nimbus
+			</div>
+			<div class="dash-tile-content">
+				<div class="dash-tile-content-inner-fluid">
+					<table class="table table-hover" role="grid">
+						<thead>
+							<tr>
+								<th>Label</th>
+								<th class="hidden-xs hidden-sm hidden-md">Service</th>
+								<th class="hidden-xs hidden-sm hidden-md">Chambre</th>
+								<th>&nbsp;</th>
+							</tr>
+						</thead>
+						<tbody>
+
+							<tr ng-repeat="item in combined = engine.concat(nimbus) | filter: 'nimbus' | orderBy : 'label'" ng-click="openInfo(item)">
+								<td data-title="'Label'"><span class="label label-success"># {{item.engines.label}} {{item.label}}</span></td>
+								<td class="hidden-xs hidden-sm hidden-md" data-title="'Service'">{{item.patients.patientData[0].services.name}}</td>
+								<td class="hidden-xs hidden-sm hidden-md" data-title="'Chambre'"><span class="label label-info">{{item.patients.patientData[0].room}}</span></td>
+								<td data-title="'Status'" ><span class="badge badge-{{item.states.style}}">&nbsp;</span></td>
+							</tr>
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+
+
+		<div class="dash-tile dash-tile-leaf clearfix animation-stretchRight">
+			<div class="dash-tile-header">
+				<div class="dash-tile-options hide">
+					<a href="javascript:void(0)" class="btn btn-default" tooltip="Manage Orders" title="Manage Orders"><i class="fa fa-gear"></i></a>
+				</div>
+				<i class="fa fa-cogs"></i> En Location
+			</div>
+			<div class="dash-tile-content">
+				<div class="dash-tile-content-inner-fluid">
+					<table class="table table-hover" role="grid">
+						<thead>
+							<tr role="row">
+								<th><i class="fa fa-user-md"></i> Service</th>
+								<th><i class="fa fa-bolt"></i> Prêt #</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr role="row" data-ng-repeat="item in filteredUnderWay = (important | filter: {states : { value :'12'} }: strict)">
+								<td><span class="label label-success">{{item.patients.patientData[0].services.name}}</span></td>
+								<td>{{item.hire.loan}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="dash-tile animation-stretchLeft ng-hide">
+			<div class="dash-tile-header">
+				<div class="dash-tile-options">
+					<a href="javascript:void(0)" class="btn btn-default" tooltip="Manage Orders" title="Manage Orders"><i class="fa fa-gear"></i></a>
+				</div>
+				<i class="fa fa-cogs"></i> En Panne
+			</div>
+			<div class="dash-tile-content">
+				<div class="dash-tile-content-inner-fluid">
+					<!--<h5 class="page-header-sub"><a href="javascript:void(0)">#1 - Project</a></h5>-->
+					<p>Le module de gestion des pannes est toujours en cours de développement</p>
+					<p>Merci de votre patiente</p>
+				</div>
+			</div>
+		</div>
+
+
+	</div>
+</div>

@@ -1,0 +1,103 @@
+<!-- Inbox -->
+<h3 class="page-header page-header-top"><i class="fa fa-comments-o"></i> FeedBack <small>Je laisse des informations pour améliorer l'application</small></h3>
+
+<!-- Inbox Container -->
+<div class="inbox-container clearfix">
+    <!-- Inbox Menu -->
+    <div class="inbox-menu">
+        <ul class="nav nav-pills nav-stacked push">
+            <li>
+                <!-- Modal is under the Inbox Container div -->
+                <a href="#inbox-compose-modal" data-toggle="modal"><i class="fa fa-pencil"></i> Nouveau Feed</a>
+            </li>
+        </ul>
+        <ul class="nav nav-pills nav-stacked push">
+            <li class="active">
+                <a href="javascript:void(0)"><i class="fa fa-inbox"></i> Mes Feeds <span id="count-inbox" class="inbox-menu-count"></span></a>
+            </li>
+            <li>
+                <a href="javascript:void(0)"><i class="fa fa-fighter-jet"></i> Tous les Feeds</a>
+            </li>
+        </ul>
+        <ul class="nav nav-pills nav-stacked">
+            <li>
+                <a href="javascript:void(0)"><i class="fa fa-circle text-danger"></i> Important <span class="inbox-menu-count">18</span></a>
+            </li>
+            <li>
+                <a href="javascript:void(0)"><i class="fa fa-circle text-warning"></i> Interface <span class="inbox-menu-count">15</span></a>
+            </li>
+            <li>
+                <a href="javascript:void(0)"><i class="fa fa-circle text-success"></i> Comportement <span class="inbox-menu-count">20</span></a>
+            </li>
+        </ul>
+    </div>
+    <!-- END Inbox Menu -->
+
+    <!-- Inbox Messages Outer -->
+    <div class="inbox-messages-outer">
+        <!-- Inbox Messages -->
+        <div class="inbox-messages">
+            <!-- Inbox Messages List -->
+            <div class="inbox-messages-list">
+                <input type="text" id="inbox-search" name="inbox-search" class="form-control" placeholder="Search..">
+                <ul class="nav nav-pills nav-stacked">
+                    <li>
+                        <a href="javascript:void(0)" id="msg1" class="unread">
+                            <span class="inbox-messages-list-username">Arthur</span> <span class="inbox-messages-list-meta">2 min ago</span><br>
+                            <span class="inbox-messages-list-title">Couleur</span><br>
+                            <span class="inbox-messages-list-preview">Si nous pouvions avoir le choi...</span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="javascript:void(0)" id="msg2">
+                            <span class="inbox-messages-list-username">Tech_biomédical</span> <span class="inbox-messages-list-meta">3 min ago</span><br>
+                            <span class="inbox-messages-list-title">Ajout de fonction propre</span><br>
+                            <span class="inbox-messages-list-preview">Il serait bien qu'en cliquant s...</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <!-- END Inbox Messages List -->
+
+            <!-- Inbox Messages Content -->
+            <div class="inbox-messages-container">
+                <!-- Actions -->
+                <ul class="inbox-messages-content-actions clearfix">
+                    <li><a href="javascript:void(0)"><i class="fa fa-mail-reply"></i> Reply</a></li>
+                    <li><a href="javascript:void(0)"><i class="fa fa-mail-reply-all"></i> Reply to all</a></li>
+                    <li><a href="javascript:void(0)"><i class="fa fa-mail-forward"></i> Forward</a></li>
+                    <li><a href="javascript:void(0)"><i class="fa fa-print"></i> Print</a></li>
+                    <li><a href="javascript:void(0)"><i class="fa fa-briefcase"></i> Archive</a></li>
+                    <li><a href="javascript:void(0)"><i class="fa fa-times"></i> Delete</a></li>
+                </ul>
+                <!-- END Actions -->
+
+                <!-- Message Header -->
+                <div class="inbox-messages-content-header content-text">
+                    <a href="javascript:void(0)"><strong>Tech_Biomedical</strong></a>
+                    <span class="label label-info">12 Avril 2015</span>
+                    <h5>Ajout de fonction propre</h5>
+                </div>
+                <!-- END Message Header -->
+
+                <div class="inbox-messages-content-body">
+                    <p>Il serait bien qu'en cliquant sur truc d'ouvrir machin pour créer bidule.</p>
+                </div>
+                <div class="inbox-messages-content-reply">
+                    <form action="page_inbox.html" method="post" class="form-horizontal remove-margin" onsubmit="return false;">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <textarea id="inbox-reply-message" name="inbox-reply-message" class="textarea-editor" rows="6"></textarea>
+                                <button class="btn btn-success"><i class="fa fa-pencil-square-o"></i> Reply</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- END Inbox Messages Content -->
+        </div>
+        <!-- END Inbox Messages -->
+    </div>
+    <!-- END Inbox Messages Outer -->
+</div>
+<!-- END Inbox Container -->                

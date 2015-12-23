@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<html class="no-js" ng-app="gmae" ng-controller="AppController" lang="fr_FR">
+<head >
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>GMAE, Gestion de Matelas Anti Escarres </title>
+
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <link rel="stylesheet" href="dist/css/style.css">
+    <link rel="icon" href="favicon.ico" />
+
+</head>
+
+<body ng-cloak class="ng-cloak" ng-class="{ 'login' : !userIsAuthenticated }" >
+
+    <ng-socket ng-if="looseConnect"></ng-socket>
+
+    <div id="login-container" ng-login ng-hide="userIsAuthenticated"></div>
+
+    <!-- Page Container -->
+    <div id="page-container" ng-if="userIsAuthenticated">
+        <!-- Header -->
+        <header class="navbar navbar-inverse" ng-header></header>
+        <!-- END Header -->
+
+        <toaster-container toaster-options="{'position-class': 'toast-top-full-width', 'close-button':{ 'toast-warning': true, 'toast-error': false }}"></toaster-container>
+
+        <!-- Inner Container -->        
+        <div id="inner-container" resize>
+            <!-- Sidebar -->
+            <aside ng-menu id="page-sidebar" class="collapse navbar-collapse navbar-main-collapse"></aside>
+            <!-- END Sidebar -->
+
+            <!-- Page Content -->
+            <div id="page-content" style="min-height: 197px;">
+                <!-- Navigation info -->
+                <ul id="nav-info" class="clearfix" ng-breadcrumb></ul>
+                <!-- END Navigation info -->
+                <ui-view> </ui-view>
+            </div>
+            <!-- END Page Content -->
+
+            <!-- Footer -->
+            <footer ng-footer></footer>
+            <!-- END Footer -->
+        </div>
+        <!-- END Inner Container -->
+    </div>
+    <!-- END Page Container -->
+
+    <script src="dist/js/app.min.js"></script>
+
+</body>
+</html>

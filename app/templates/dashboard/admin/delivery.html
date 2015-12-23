@@ -1,0 +1,73 @@
+
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" ng-click="close()">×</button>
+        <h4>Information sur la demande faite le {{data.date | date:'dd/MM/yyyy'}}</h4>
+    </div>
+
+    <div class="media push clearfix">
+        <span class="pull-left">
+            <i class="gi gi-big" ng-class="{'gi-user': data.patients.civility == 'M.', 'gi-girl': data.patients.civility == 'Mme'}"></i>
+        </span>
+
+        <div class="media-body">
+            <h4 class="media-heading">{{data.patients.civility}} {{data.patients.name}}</h4>
+            <p><em>Score de Braden :<em> <b>{{data.patients.patientData[0].braden}}</b></p>
+            <p><em>Chambre :</em> <b>{{data.patients.patientData[0].room}}</b></p>
+
+            <p><em>Demandeur : </em> <b>{{data.users.lastname}} {{data.users.name}}</b> </p>
+            <p><em>Status de la demande : </em> <b>{{data.states.name}}</b> </p>
+        </div>
+    </div>
+
+    <div class="media push clearfix" ng-if="data.patients.information">
+        <div class="wpb_alert wpb_alert_comment">
+            <h3>Message laissé lors de la demande</h3>
+            <p data-ng-bind-html="data.patients.information" class="ng-binding"></p>
+        </div>
+    </div>
+
+    <div class="media push clearfix">
+        <div class="wpb_alert wpb_alert_info">
+            <h2>Saisir une livraison</h2>
+            <p>Vous ne devez saisir ces informations qu'en possession exclusive du bon de livraison avec le numéro du bon et le numéro du moteur mis en location par la société.</p>
+            <p>La date saisie doit être celle présente sur le bon de livraison et non la date à laquel vous faites la saisie.</p>
+        </div>
+    </div>
+
+    <form novalidate name="attribute">
+
+        <div class="media push clearfix">
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <p class="input-group">
+                        <input disabled type="text" class="form-control" datepicker-popup="{{format}}" ng-model="formData.hire.dateIn" is-open="opened" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" min-date="modalRentInfo.hire.dateAsk" max-date="today" ng-required="true" close-text="Close" placeholder="Date du BL" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="open($event)"><i class="gi gi-calendar"></i></button>
+                        </span>
+                    </p>
+                </div>
+                <div class="col-sm-4">
+                    <input type="text" ng-model="formData.hire.delivery" class="form-control" name="delivery" placeholder="Bon de livraison N°" required>
+                </div>
+                <div class="col-sm-4">
+                    <input type="text" ng-model="formData.hire.loan" class="form-control" name="loan" placeholder="N° de prêt" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="media push clearfix form-group" ng-if="attribute.$valid">
+            <div class="callout-button">
+                <a class="button" ng-click="saveDelivery()">Sauvegarder</a>
+            </div>
+        </div>
+
+    </form>
+
+
+    <div class="modal-footer">
+        <button class="btn btn-danger" ng-click="close()">Fermer</button>
+    </div>
+
+
+</div>

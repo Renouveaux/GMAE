@@ -1,0 +1,159 @@
+
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" ng-click="close()">×</button>
+        <h4>Information sur la demande faite le {{data.date | date:'dd/MM/yyyy'}}</h4>
+    </div>
+
+    <div class="media push clearfix">
+        <span class="pull-left">
+            <i class="gi gi-big" ng-class="{'gi-user': data.patients.civility == 'M.', 'gi-girl': data.patients.civility == 'Mme'}"></i>
+        </span>
+
+        <div class="media-body">
+            <h4 class="media-heading">{{data.patients.civility}} {{data.patients.name}}</h4>
+            <p><em>Score de Braden :<em> <b>{{data.patients.patientData[0].braden}}</b></p>
+            <p><em>Chambre :</em> <b>{{data.patients.patientData[0].room}}</b></p>
+
+            <p><em>Demandeur : </em> <b>{{data.users.lastname}} {{data.users.name}}</b> </p>
+            <p><em>Status de la demande : </em> <b>{{data.states.name}}</b> </p>
+        </div>
+    </div>
+
+    <div class="media push clearfix" ng-if="data.patients.information">
+        <div class="wpb_alert wpb_alert_comment">
+            <h3>Message laissé lors de la demande</h3>
+            <p data-ng-bind-html="data.patients.information" class="ng-binding"></p>
+        </div>
+    </div>
+
+    <form novalidate name="attribute">
+
+        <div class="media push clearfix">
+            <div class="form-group">
+                <label class="control-label col-md-2" style="margin-top: 5px;"><strong>Type de moteur</strong></label>
+                <div class="col-md-10">
+                    <span ng-repeat="item in properties">
+                        <button type="button" class="btn"ng-click="getList(item.manufacturers); data.tes = item"
+                        ng-class="data.tes._id == item._id ? 'btn-success' : 'btn-warning'"
+                        >{{item.model}}</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="media push clearfix" ng-if="engineCount > 0 && slipcoverCount > 0">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="col-md-6 control-label"><strong>N° de Matelas : </strong></label>
+                    <div class="col-md-6">
+                        <select class="form-control" ng-model="engine._id"
+                        ng-options="engine._id as engine.label for engine in engineList"
+                        ng-change="modalAssignInfo.engines = engine._id;"></select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="col-md-6 control-label"><strong>N° de Housse :</strong></label>
+                    <div class="col-md-6">
+                        <select class="form-control" ng-model="slipcover._id"
+                        ng-options="slipcover._id as slipcover.label for slipcover in slipcoverList"
+                        ng-change="modalAssignInfo.slipcovers = slipcover._id;"></select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="media push clearfix" ng-if="modalAssignInfo.engines.length > 0 && modalAssignInfo.slipcovers.length > 0">
+            <div class="form-group">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <div class="callout-button">
+                            <a class="button" ng-click="saveAssign()">Sauvegarder</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group" ng-if="engineCount == 0 || slipcoverCount == 0">
+            <div class="media push clearfix">
+                <div class="wpb_alert wpb_alert_error">
+                    <h2>Pas de disponibilité</h2>
+                    <p>Aucun matelas n'est disponible en stock, en poursuivant, vous allez faire une demande de location auprès du loueur locale. </p>
+                    <p><b>Avant de continuer, merci de faire une saisie CPAGE.</b> </p>
+                </div>
+            </div>
+
+            <div class="media push clearfix">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <div class="col-md-4">
+                            <div class="input-group" ng-class="{'has-error': attribute.cpage.$invalid}">
+                                <span class="input-group-addon">MG0/</span>
+                                <input type="number" class="form-control" name="cpage" ng-model="modalAssignInfo.cpage" placeholder="Code CPAGE" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-8">
+                            <div class="form-group" ng-class="{'has-error': attribute.renter.$invalid}">
+                                <select class="form-control" ng-model="modalAssignInfo.renter"
+                                    ng-options="data.name for data in renterList" name="renter" required  placeholder="Code CPAGE">
+                                    <option value=''> - Choisir un Loueur - </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="media push clearfix">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-addon">Commande CPAGE :</span>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="file" ngf-select ng-model="file" name="modalAssignInfo.cpage" required>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="media push clearfix">
+                <div class="form-group">
+                    <div class="col-md-10 col-md-offset-1">
+                        <label for="">Vous pouvez laisser un message pour le loueur</label>
+                        <div text-angular ng-model="modalAssignInfo.message_renter"></div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="media push clearfix">
+                <div class="col-sm-12" ng-if="attribute.$valid">
+                    <div class="form-group">
+                        <div class="callout-button">
+                            <a class="button" ng-click="verify(file)">Envoyer</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </form>
+
+    <div class="modal-footer">  
+        <button ng-if="userPrivilege >= 3" class="btn btn-danger pull-left" ng-click="deleteFile()">Supprimer</button>
+        <button class="btn btn-info" ng-click="close()">Fermer</button>
+    </div>
+
+
+</div>

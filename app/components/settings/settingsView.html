@@ -1,0 +1,33 @@
+
+
+<h3 class="page-header page-header-top ng-scope"><i class="gi gi-keys"></i> Settings <small>Partie administrateurs</small></h3>
+
+<div class="row">
+	
+
+	<div class="col-sm-3">
+
+		<div class="plan plan-featured">
+			<h2 class="plan-header"><i class="fa fa-bars"></i> Menu</h2>
+			<ul class="fa-ul">
+				<li ng-repeat="menu in menus">
+					<i class="fa-li {{menu.class}}"></i> 
+					<strong>{{menu.display_name}}</strong> 
+					<span class="pull-right label label-warning">{{menu.privilege}}</span>
+				</li>
+			</ul>
+
+
+		</div>
+
+	</div>
+
+
+
+
+
+
+
+
+
+</div>
