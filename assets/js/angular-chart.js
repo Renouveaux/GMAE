@@ -1,11 +1,13 @@
 (function (factory) {
   'use strict';
-  if (typeof define === 'function' && define.amd) {
-    // AMD. Register as an anonymous module.
-    define(['angular', 'chart.js'], factory);
-  } else if (typeof exports === 'object') {
+  if (typeof exports === 'object') {
     // Node/CommonJS
-    module.exports = factory(require('angular'), require('chart.js'));
+    module.exports = factory(
+      typeof angular !== 'undefined' ? angular : require('angular'),
+      typeof Chart !== 'undefined' ? Chart : require('chart.js'));
+  }  else if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['angular', 'chart'], factory);
   } else {
     // Browser globals
     factory(angular, Chart);
@@ -32,9 +34,9 @@
 
   if (usingExcanvas) Chart.defaults.global.animation = false;
 
-  angular.module('chart.js', [])
+  return angular.module('chart.js', [])
     .provider('ChartJs', ChartJsProvider)
-    .factory('ChartJsFactory', ['ChartJs', ChartJsFactory])
+    .factory('ChartJsFactory', ['ChartJs', '$timeout', ChartJsFactory])
     .directive('chartBase', ['ChartJsFactory', function (ChartJsFactory) { return new ChartJsFactory(); }])
     .directive('chartLine', ['ChartJsFactory', function (ChartJsFactory) { return new ChartJsFactory('Line'); }])
     .directive('chartBar', ['ChartJsFactory', function (ChartJsFactory) { return new ChartJsFactory('Bar'); }])
@@ -81,21 +83,30 @@
     };
   }
 
-  function ChartJsFactory (ChartJs) {
+  function ChartJsFactory (ChartJs, $timeout) {
     return function chart (type) {
       return {
         restrict: 'CA',
         scope: {
-          data: '=',
-          labels: '=',
-          options: '=',
-          series: '=',
+          data: '=?',
+          labels: '=?',
+          options: '=?',
+          series: '=?',
           colours: '=?',
           getColour: '=?',
           chartType: '=',
           legend: '@',
-          click: '=',
-          hover: '='
+          click: '=?',
+          hover: '=?',
+
+          chartData: '=?',
+          chartLabels: '=?',
+          chartOptions: '=?',
+          chartSeries: '=?',
+          chartColours: '=?',
+          chartLegend: '@',
+          chartClick: '=?',
+          chartHover: '=?'
         },
         link: function (scope, elem/*, attrs */) {
           var chart, container = document.createElement('div');
@@ -105,19 +116,38 @@
 
           if (usingExcanvas) window.G_vmlCanvasManager.initElement(elem[0]);
 
+          ['data', 'labels', 'options', 'series', 'colours', 'legend', 'click', 'hover'].forEach(deprecated);
+          function aliasVar (fromName, toName) {
+            scope.$watch(fromName, function (newVal) {
+              if (typeof newVal === 'undefined') return;
+              scope[toName] = newVal;
+            });
+          }
+          /* provide backward compatibility to "old" directive names, by
+           * having an alias point from the new names to the old names. */
+          aliasVar('chartData', 'data');
+          aliasVar('chartLabels', 'labels');
+          aliasVar('chartOptions', 'options');
+          aliasVar('chartSeries', 'series');
+          aliasVar('chartColours', 'colours');
+          aliasVar('chartLegend', 'legend');
+          aliasVar('chartClick', 'click');
+          aliasVar('chartHover', 'hover');
+
           // Order of setting "watch" matter
 
           scope.$watch('data', function (newVal, oldVal) {
-            if (! newVal || ! newVal.length || (Array.isArray(newVal[0]) && ! newVal[0].length)) return;
+            if (! newVal || ! newVal.length || (Array.isArray(newVal[0]) && ! newVal[0].length)) {
+              destroyChart(chart, scope);
+              return;
+            }
             var chartType = type || scope.chartType;
             if (! chartType) return;
 
-            if (chart) {
-              if (canUpdateChart(newVal, oldVal)) return updateChart(chart, newVal, scope, elem);
-              chart.destroy();
-            }
+            if (chart && canUpdateChart(newVal, oldVal))
+              return updateChart(chart, newVal, scope, elem);
 
-            chart = createChart(chartType, scope, elem);
+            createChart(chartType);
           }, true);
 
           scope.$watch('series', resetChart, true);
@@ -128,12 +158,11 @@
           scope.$watch('chartType', function (newVal, oldVal) {
             if (isEmpty(newVal)) return;
             if (angular.equals(newVal, oldVal)) return;
-            if (chart) chart.destroy();
-            chart = createChart(newVal, scope, elem);
+            createChart(newVal);
           });
 
           scope.$on('$destroy', function () {
-            if (chart) chart.destroy();
+            destroyChart(chart, scope);
           });
 
           function resetChart (newVal, oldVal) {
@@ -144,9 +173,45 @@
 
             // chart.update() doesn't work for series and labels
             // so we have to re-create the chart entirely
-            if (chart) chart.destroy();
+            createChart(chartType);
+          }
 
-            chart = createChart(chartType, scope, elem);
+          function createChart (type) {
+            if (isResponsive(type, scope) && elem[0].clientHeight === 0 && container.clientHeight === 0) {
+              return $timeout(function () {
+                createChart(type);
+              }, 50, false);
+            }
+            if (! scope.data || ! scope.data.length) return;
+            scope.getColour = typeof scope.getColour === 'function' ? scope.getColour : getRandomColour;
+            var colours = getColours(type, scope);
+            var cvs = elem[0], ctx = cvs.getContext('2d');
+            var data = Array.isArray(scope.data[0]) ?
+              getDataSets(scope.labels, scope.data, scope.series || [], colours) :
+              getData(scope.labels, scope.data, colours);
+            var options = angular.extend({}, ChartJs.getOptions(type), scope.options);
+
+            // Destroy old chart if it exists to avoid ghost charts issue
+            // https://github.com/jtblin/angular-chart.js/issues/187
+            destroyChart(chart, scope);
+            chart = new ChartJs.Chart(ctx)[type](data, options);
+            scope.$emit('create', chart);
+
+            // Bind events
+            cvs.onclick = scope.click ? getEventHandler(scope, chart, 'click', false) : angular.noop;
+            cvs.onmousemove = scope.hover ? getEventHandler(scope, chart, 'hover', true) : angular.noop;
+
+            if (scope.legend && scope.legend !== 'false') setLegend(elem, chart);
+          }
+
+          function deprecated (attr) {
+            if (typeof console !== 'undefined' && ChartJs.getOptions().env !== 'test') {
+              var warn = typeof console.warn === 'function' ? console.warn : console.log;
+              if (!! scope[attr]) {
+                warn.call(console, '"%s" is deprecated and will be removed in a future version. ' +
+                  'Please use "chart-%s" instead.', attr, attr);
+              }
+            }
           }
         }
       };
@@ -156,7 +221,7 @@
       if (newVal && oldVal && newVal.length && oldVal.length) {
         return Array.isArray(newVal[0]) ?
         newVal.length === oldVal.length && newVal.every(function (element, index) {
-          return element.length === oldVal[index].length;}) :
+          return element.length === oldVal[index].length; }) :
           oldVal.reduce(sum, 0) > 0 ? newVal.length === oldVal.length : false;
       }
       return false;
@@ -166,44 +231,34 @@
       return carry + val;
     }
 
-    function createChart (type, scope, elem) {
-      if (! scope.data || ! scope.data.length) return;
-      scope.getColour = typeof scope.getColour === 'function' ? scope.getColour : getRandomColour;
-      scope.colours = getColours(type, scope);
-      var cvs = elem[0], ctx = cvs.getContext('2d');
-      var data = Array.isArray(scope.data[0]) ?
-        getDataSets(scope.labels, scope.data, scope.series || [], scope.colours) :
-        getData(scope.labels, scope.data, scope.colours);
-      var options = angular.extend({}, ChartJs.getOptions(type), scope.options);
-      var chart = new ChartJs.Chart(ctx)[type](data, options);
-      scope.$emit('create', chart);
-
-      ['hover', 'click'].forEach(function (action) {
-        if (scope[action]) cvs[action === 'click' ? 'onclick' : 'onmousemove'] = getEventHandler(scope, chart, action);
-      });
-      if (scope.legend && scope.legend !== 'false') setLegend(elem, chart);
-      return chart;
-    }
-
-    function getEventHandler (scope, chart, action) {
+    function getEventHandler (scope, chart, action, triggerOnlyOnChange) {
+      var lastState = null;
       return function (evt) {
         var atEvent = chart.getPointsAtEvent || chart.getBarsAtEvent || chart.getSegmentsAtEvent;
         if (atEvent) {
           var activePoints = atEvent.call(chart, evt);
-          scope[action](activePoints, evt);
-          scope.$apply();
+          if (triggerOnlyOnChange === false || angular.equals(lastState, activePoints) === false) {
+            lastState = activePoints;
+            scope[action](activePoints, evt);
+            scope.$apply();
+          }
         }
       };
     }
 
     function getColours (type, scope) {
+      var notEnoughColours = false;
       var colours = angular.copy(scope.colours ||
         ChartJs.getOptions(type).colours ||
         Chart.defaults.global.colours
       );
       while (colours.length < scope.data.length) {
         colours.push(scope.getColour());
+        notEnoughColours = true;
       }
+      // mutate colours in this case as we don't want
+      // the colours to change on each refresh
+      if (notEnoughColours) scope.colours = colours;
       return colours.map(convertColour);
     }
 
@@ -306,5 +361,15 @@
         (typeof value === 'object' && ! Object.keys(value).length);
     }
 
+    function isResponsive (type, scope) {
+      var options = angular.extend({}, Chart.defaults.global, ChartJs.getOptions(type), scope.options);
+      return options.responsive;
+    }
+
+    function destroyChart(chart, scope) {
+      if(! chart) return;
+      chart.destroy();
+      scope.$emit('destroy', chart);
+    }
   }
 }));

@@ -19,7 +19,11 @@ require('angular-marked');
 require('../assets/js/textAngular');
 require('../assets/js/socket.io');
 require('../assets/js/ng-table');
-require('../assets/js/angular-chart');
+require('sweetalert');
+
+Highcharts = require('highcharts');
+require('highcharts/modules/exporting')(Highcharts);
+require('highcharts-ng');
 
 require('../app/shared/json/json-formatter');
 
@@ -33,7 +37,7 @@ Configuration de notre application
 
 ********************************************************************/
 angular
-.module('gmae', ['ui.router', 'angular-jwt', 'shared', 'components', 'ui.bootstrap', 'jsonFormatter', 'yaru22.angular-timeago', 'ngFileUpload', 'hc.marked'])
+.module('gmae', ['ui.router', 'angular-jwt', 'shared', 'components', 'ui.bootstrap', 'jsonFormatter', 'yaru22.angular-timeago', 'ngFileUpload', 'hc.marked', 'highcharts-ng'])
 .config( require('./router') )
 .run( require('./init') )
 .controller('AppController', require('./appCtrl.js') )

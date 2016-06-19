@@ -1,34 +1,105 @@
-<h3 class="page-header page-header-top"><i class="fa fa-line-chart"></i> Statitiques</h3>
+<div class="row">
 
-<!--
-	Tableau nombre de demande par mois 
--->
-<div class="col-md-6">
+	<h3 class="page-header page-header-top"><i class="fa fa-line-chart"></i> Statistiques</h3>
 
-	<div class="dash-tile clearfix animation-pullDown">
-		<div class="dash-tile-header">
-			Tableau nombre de demande par mois 
+	<div class="col-md-12">
+		<div class="dash-tile clearfix animation-pullDown">
+			<div class="dash-tile-header">
+				Gestion des filtres
+			</div>
+
+			<div class="col-md-5">
+
+				<div class="form-group">
+
+					<div class="form-group" >
+
+						<label class="control-label col-md-2"><strong>Année</strong></label>
+						<div class="col-md-4">
+							<select class="form-control ng-pristine" ng-model="year" name="year" ng-change="getYear(year)" >
+								<option label="2015" value="2015"></option>
+								<option label="2016" value="2016"></option>
+							</select>
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+
 		</div>
-		<canvas class="chart chart-line" data="data" labels="labels" legend="false" series="series"></canvas> 
+	</div>		
+
+
+	<div class="col-md-12">
+		<h3 class="page-header-sub">Répartition Location ou HDPM par mois</h3>
+		<highchart id="askByMonth" config="askByMonth"></highchart>		
 	</div>
 
-</div>
-
-<!--
-	Tableau nombre de location externe par mois 
--->
-
-<!--
-	Répartition des demandes par service
--->										
-
-<div class="col-md-6">
-
-	<div class="dash-tile clearfix animation-pullDown">
-		<div class="dash-tile-header">
-			Répartition des demandes par service
-		</div>
-		<canvas id="line" class="chart chart-line" data="servicesData" labels="servicesLabels" legend="false" series="servicesSeries"></canvas> 
+	<!--
+		Besoin matelas en jour et par service
+	-->
+	<div class="col-md-12">
+		<h3 class="page-header-sub">Taux d'utilisation annuel par matelas HDPMB</h3>
+		<highchart id="rateByYear" config="rateByYear"></highchart>	
 	</div>
+
+	<!--
+		Répartition des demandes par service
+	-->										
+
+	<div class="col-md-6">
+		<h3 class="page-header-sub">Répartition annuelle par service</h3>	
+		<div id="allotment"></div>		
+	</div>
+
+
+	<!--
+		Besoin des matelas en jours et par service
+	-->
+	<div class="col-md-6">
+		<h3 class="page-header-sub">Besoin des matelas en jours et par service</h3>
+		<div id="byDayAndServices"></div>	
+	</div>
+
+
+
+	<!--
+		Taux d'utilisation annuel par matelas
+	-->
+	<div class="col-md-6">
+		<h3 class="page-header-sub">Taux d'utilisation annuel des matelas HDPMB par service</h3>
+		<div id="annuelUseEngine"></div>		
+	</div>
+
+
+	<div class="col-md-8 col-md-offset-2">
+		<div class="dash-tile dash-tile-ocean clearfix animation-pullDown">
+			<div class="dash-tile-header" style="text-align: center">
+				Année 2015 (365 jours)
+			</div>
+			
+			<div class="dash-tile-content" style="font-size: 16px; font-weight: bold; text-align: right">
+				<div class="col-md-12">&nbsp;</div>
+
+				<div class="col-md-5">Nb de jours d'utilisation de matelas HDPMB</div>
+				<div class="col-md-2">4898</div>
+				<div class="col-md-2">soit :</div>
+				<div class="col-md-3">103.67 Heures magasin</div>
+
+				<div class="col-md-5">Nb de jours de location</div>
+				<div class="col-md-2">1359</div>
+				<div class="col-md-2">soit :</div>
+				<div class="col-md-3">3.72 Matelas / jour</div>
+
+				<div class="col-md-12">&nbsp;</div>
+
+				<div class="col-md-5">Total</div>
+				<div class="col-md-2">6257</div>
+			</div>
+
+		</div>
+	</div>	
 
 </div>

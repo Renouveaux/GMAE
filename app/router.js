@@ -88,6 +88,15 @@ module.exports = function($httpProvider, $stateProvider, $urlRouterProvider, jwt
 		}
 	});
 
+	$stateProvider.state('billing', {
+		url: "/billing",
+		templateUrl: "app/components/billing/index.html",
+		controller: require('./components/billing'),
+		data: {
+			privilege: 2
+		}
+	});
+
 	jwtInterceptorProvider.tokenGetter = function() {
 		return localStorage.getItem('id_token');
 	};

@@ -1,3 +1,453 @@
+(function (factory) {
+  'use strict';
+  if (typeof exports === 'object') {
+    // Node/CommonJS
+    module.exports = factory(
+      typeof angular !== 'undefined' ? angular : require('angular'),
+      typeof Chart !== 'undefined' ? Chart : require('chart.js'));
+  }  else if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['angular', 'chart'], factory);
+  } else {
+    // Browser globals
+    factory(angular, Chart);
+  }
+}(function (angular, Chart) {
+  'use strict';
+
+  Chart.defaults.global.responsive = true;
+  Chart.defaults.global.multiTooltipTemplate = '<%if (datasetLabel){%><%=datasetLabel%>: <%}%><%= value %>';
+
+  Chart.defaults.global.colours = [
+    '#97BBCD', // blue
+    '#DCDCDC', // light grey
+    '#F7464A', // red
+    '#46BFBD', // green
+    '#FDB45C', // yellow
+    '#949FB1', // grey
+    '#4D5360'  // dark grey
+  ];
+
+  var usingExcanvas = typeof window.G_vmlCanvasManager === 'object' &&
+    window.G_vmlCanvasManager !== null &&
+    typeof window.G_vmlCanvasManager.initElement === 'function';
+
+  if (usingExcanvas) Chart.defaults.global.animation = false;
+
+  return angular.module('chart.js', [])
+    .provider('ChartJs', ChartJsProvider)
+    .factory('ChartJsFactory', ['ChartJs', '$timeout', ChartJsFactory])
+    .directive('chartBase', ['ChartJsFactory', function (ChartJsFactory) { return new ChartJsFactory(); }])
+    .directive('chartLine', ['ChartJsFactory', function (ChartJsFactory) { return new ChartJsFactory('Line'); }])
+    .directive('chartBar', ['ChartJsFactory', function (ChartJsFactory) { return new ChartJsFactory('Bar'); }])
+    .directive('chartRadar', ['ChartJsFactory', function (ChartJsFactory) { return new ChartJsFactory('Radar'); }])
+    .directive('chartDoughnut', ['ChartJsFactory', function (ChartJsFactory) { return new ChartJsFactory('Doughnut'); }])
+    .directive('chartPie', ['ChartJsFactory', function (ChartJsFactory) { return new ChartJsFactory('Pie'); }])
+    .directive('chartPolarArea', ['ChartJsFactory', function (ChartJsFactory) { return new ChartJsFactory('PolarArea'); }]);
+
+  /**
+   * Wrapper for chart.js
+   * Allows configuring chart js using the provider
+   *
+   * angular.module('myModule', ['chart.js']).config(function(ChartJsProvider) {
+   *   ChartJsProvider.setOptions({ responsive: true });
+   *   ChartJsProvider.setOptions('Line', { responsive: false });
+   * })))
+   */
+  function ChartJsProvider () {
+    var options = {};
+    var ChartJs = {
+      Chart: Chart,
+      getOptions: function (type) {
+        var typeOptions = type && options[type] || {};
+        return angular.extend({}, options, typeOptions);
+      }
+    };
+
+    /**
+     * Allow to set global options during configuration
+     */
+    this.setOptions = function (type, customOptions) {
+      // If no type was specified set option for the global object
+      if (! customOptions) {
+        customOptions = type;
+        options = angular.extend(options, customOptions);
+        return;
+      }
+      // Set options for the specific chart
+      options[type] = angular.extend(options[type] || {}, customOptions);
+    };
+
+    this.$get = function () {
+      return ChartJs;
+    };
+  }
+
+  function ChartJsFactory (ChartJs, $timeout) {
+    return function chart (type) {
+      return {
+        restrict: 'CA',
+        scope: {
+          data: '=?',
+          labels: '=?',
+          options: '=?',
+          series: '=?',
+          colours: '=?',
+          getColour: '=?',
+          chartType: '=',
+          legend: '@',
+          click: '=?',
+          hover: '=?',
+
+          chartData: '=?',
+          chartLabels: '=?',
+          chartOptions: '=?',
+          chartSeries: '=?',
+          chartColours: '=?',
+          chartLegend: '@',
+          chartClick: '=?',
+          chartHover: '=?'
+        },
+        link: function (scope, elem/*, attrs */) {
+          var chart, container = document.createElement('div');
+          container.className = 'chart-container';
+          elem.replaceWith(container);
+          container.appendChild(elem[0]);
+
+          if (usingExcanvas) window.G_vmlCanvasManager.initElement(elem[0]);
+
+          ['data', 'labels', 'options', 'series', 'colours', 'legend', 'click', 'hover'].forEach(deprecated);
+          function aliasVar (fromName, toName) {
+            scope.$watch(fromName, function (newVal) {
+              if (typeof newVal === 'undefined') return;
+              scope[toName] = newVal;
+            });
+          }
+          /* provide backward compatibility to "old" directive names, by
+           * having an alias point from the new names to the old names. */
+          aliasVar('chartData', 'data');
+          aliasVar('chartLabels', 'labels');
+          aliasVar('chartOptions', 'options');
+          aliasVar('chartSeries', 'series');
+          aliasVar('chartColours', 'colours');
+          aliasVar('chartLegend', 'legend');
+          aliasVar('chartClick', 'click');
+          aliasVar('chartHover', 'hover');
+
+          // Order of setting "watch" matter
+
+          scope.$watch('data', function (newVal, oldVal) {
+            if (! newVal || ! newVal.length || (Array.isArray(newVal[0]) && ! newVal[0].length)) {
+              destroyChart(chart, scope);
+              return;
+            }
+            var chartType = type || scope.chartType;
+            if (! chartType) return;
+
+            if (chart && canUpdateChart(newVal, oldVal))
+              return updateChart(chart, newVal, scope, elem);
+
+            createChart(chartType);
+          }, true);
+
+          scope.$watch('series', resetChart, true);
+          scope.$watch('labels', resetChart, true);
+          scope.$watch('options', resetChart, true);
+          scope.$watch('colours', resetChart, true);
+
+          scope.$watch('chartType', function (newVal, oldVal) {
+            if (isEmpty(newVal)) return;
+            if (angular.equals(newVal, oldVal)) return;
+            createChart(newVal);
+          });
+
+          scope.$on('$destroy', function () {
+            destroyChart(chart, scope);
+          });
+
+          function resetChart (newVal, oldVal) {
+            if (isEmpty(newVal)) return;
+            if (angular.equals(newVal, oldVal)) return;
+            var chartType = type || scope.chartType;
+            if (! chartType) return;
+
+            // chart.update() doesn't work for series and labels
+            // so we have to re-create the chart entirely
+            createChart(chartType);
+          }
+
+          function createChart (type) {
+            if (isResponsive(type, scope) && elem[0].clientHeight === 0 && container.clientHeight === 0) {
+              return $timeout(function () {
+                createChart(type);
+              }, 50, false);
+            }
+            if (! scope.data || ! scope.data.length) return;
+            scope.getColour = typeof scope.getColour === 'function' ? scope.getColour : getRandomColour;
+            var colours = getColours(type, scope);
+            var cvs = elem[0], ctx = cvs.getContext('2d');
+            var data = Array.isArray(scope.data[0]) ?
+              getDataSets(scope.labels, scope.data, scope.series || [], colours) :
+              getData(scope.labels, scope.data, colours);
+            var options = angular.extend({}, ChartJs.getOptions(type), scope.options);
+
+            // Destroy old chart if it exists to avoid ghost charts issue
+            // https://github.com/jtblin/angular-chart.js/issues/187
+            destroyChart(chart, scope);
+            chart = new ChartJs.Chart(ctx)[type](data, options);
+            scope.$emit('create', chart);
+
+            // Bind events
+            cvs.onclick = scope.click ? getEventHandler(scope, chart, 'click', false) : angular.noop;
+            cvs.onmousemove = scope.hover ? getEventHandler(scope, chart, 'hover', true) : angular.noop;
+
+            if (scope.legend && scope.legend !== 'false') setLegend(elem, chart);
+          }
+
+          function deprecated (attr) {
+            if (typeof console !== 'undefined' && ChartJs.getOptions().env !== 'test') {
+              var warn = typeof console.warn === 'function' ? console.warn : console.log;
+              if (!! scope[attr]) {
+                warn.call(console, '"%s" is deprecated and will be removed in a future version. ' +
+                  'Please use "chart-%s" instead.', attr, attr);
+              }
+            }
+          }
+        }
+      };
+    };
+
+    function canUpdateChart (newVal, oldVal) {
+      if (newVal && oldVal && newVal.length && oldVal.length) {
+        return Array.isArray(newVal[0]) ?
+        newVal.length === oldVal.length && newVal.every(function (element, index) {
+          return element.length === oldVal[index].length; }) :
+          oldVal.reduce(sum, 0) > 0 ? newVal.length === oldVal.length : false;
+      }
+      return false;
+    }
+
+    function sum (carry, val) {
+      return carry + val;
+    }
+
+    function getEventHandler (scope, chart, action, triggerOnlyOnChange) {
+      var lastState = null;
+      return function (evt) {
+        var atEvent = chart.getPointsAtEvent || chart.getBarsAtEvent || chart.getSegmentsAtEvent;
+        if (atEvent) {
+          var activePoints = atEvent.call(chart, evt);
+          if (triggerOnlyOnChange === false || angular.equals(lastState, activePoints) === false) {
+            lastState = activePoints;
+            scope[action](activePoints, evt);
+            scope.$apply();
+          }
+        }
+      };
+    }
+
+    function getColours (type, scope) {
+      var notEnoughColours = false;
+      var colours = angular.copy(scope.colours ||
+        ChartJs.getOptions(type).colours ||
+        Chart.defaults.global.colours
+      );
+      while (colours.length < scope.data.length) {
+        colours.push(scope.getColour());
+        notEnoughColours = true;
+      }
+      // mutate colours in this case as we don't want
+      // the colours to change on each refresh
+      if (notEnoughColours) scope.colours = colours;
+      return colours.map(convertColour);
+    }
+
+    function convertColour (colour) {
+      if (typeof colour === 'object' && colour !== null) return colour;
+      if (typeof colour === 'string' && colour[0] === '#') return getColour(hexToRgb(colour.substr(1)));
+      return getRandomColour();
+    }
+
+    function getRandomColour () {
+      var colour = [getRandomInt(0, 255), getRandomInt(0, 255), getRandomInt(0, 255)];
+      return getColour(colour);
+    }
+
+    function getColour (colour) {
+      return {
+        fillColor: rgba(colour, 0.2),
+        strokeColor: rgba(colour, 1),
+        pointColor: rgba(colour, 1),
+        pointStrokeColor: '#fff',
+        pointHighlightFill: '#fff',
+        pointHighlightStroke: rgba(colour, 0.8)
+      };
+    }
+
+    function getRandomInt (min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function rgba (colour, alpha) {
+      if (usingExcanvas) {
+        // rgba not supported by IE8
+        return 'rgb(' + colour.join(',') + ')';
+      } else {
+        return 'rgba(' + colour.concat(alpha).join(',') + ')';
+      }
+    }
+
+    // Credit: http://stackoverflow.com/a/11508164/1190235
+    function hexToRgb (hex) {
+      var bigint = parseInt(hex, 16),
+        r = (bigint >> 16) & 255,
+        g = (bigint >> 8) & 255,
+        b = bigint & 255;
+
+      return [r, g, b];
+    }
+
+    function getDataSets (labels, data, series, colours) {
+      return {
+        labels: labels,
+        datasets: data.map(function (item, i) {
+          return angular.extend({}, colours[i], {
+            label: series[i],
+            data: item
+          });
+        })
+      };
+    }
+
+    function getData (labels, data, colours) {
+      return labels.map(function (label, i) {
+        return angular.extend({}, colours[i], {
+          label: label,
+          value: data[i],
+          color: colours[i].strokeColor,
+          highlight: colours[i].pointHighlightStroke
+        });
+      });
+    }
+
+    function setLegend (elem, chart) {
+      var $parent = elem.parent(),
+          $oldLegend = $parent.find('chart-legend'),
+          legend = '<chart-legend>' + chart.generateLegend() + '</chart-legend>';
+      if ($oldLegend.length) $oldLegend.replaceWith(legend);
+      else $parent.append(legend);
+    }
+
+    function updateChart (chart, values, scope, elem) {
+      if (Array.isArray(scope.data[0])) {
+        chart.datasets.forEach(function (dataset, i) {
+          (dataset.points || dataset.bars).forEach(function (dataItem, j) {
+            dataItem.value = values[i][j];
+          });
+        });
+      } else {
+        chart.segments.forEach(function (segment, i) {
+          segment.value = values[i];
+        });
+      }
+      chart.update();
+      scope.$emit('update', chart);
+      if (scope.legend && scope.legend !== 'false') setLegend(elem, chart);
+    }
+
+    function isEmpty (value) {
+      return ! value ||
+        (Array.isArray(value) && ! value.length) ||
+        (typeof value === 'object' && ! Object.keys(value).length);
+    }
+
+    function isResponsive (type, scope) {
+      var options = angular.extend({}, Chart.defaults.global, ChartJs.getOptions(type), scope.options);
+      return options.responsive;
+    }
+
+    function destroyChart(chart, scope) {
+      if(! chart) return;
+      chart.destroy();
+      scope.$emit('destroy', chart);
+    }
+  }
+}));
+
+angular.module('perfect_scrollbar', []).directive('perfectScrollbar',
+  ['$parse', '$window', function($parse, $window) {
+  var psOptions = [
+    'wheelSpeed', 'wheelPropagation', 'minScrollbarLength', 'useBothWheelAxes',
+    'useKeyboard', 'suppressScrollX', 'suppressScrollY', 'scrollXMarginOffset',
+    'scrollYMarginOffset', 'includePadding'//, 'onScroll', 'scrollDown'
+  ];
+
+  return {
+    restrict: 'EA',
+    transclude: true,
+    template: '<div><div ng-transclude></div></div>',
+    replace: true,
+    link: function($scope, $elem, $attr) {
+      var jqWindow = angular.element($window);
+      var options = {};
+
+      for (var i=0, l=psOptions.length; i<l; i++) {
+        var opt = psOptions[i];
+        if ($attr[opt] !== undefined) {
+          options[opt] = $parse($attr[opt])();
+        }
+      }
+
+      $scope.$evalAsync(function() {
+        $elem.perfectScrollbar(options);
+        var onScrollHandler = $parse($attr.onScroll)
+        $elem.scroll(function(){
+          var scrollTop = $elem.scrollTop()
+          var scrollHeight = $elem.prop('scrollHeight') - $elem.height()
+          $scope.$apply(function() {
+            onScrollHandler($scope, {
+              scrollTop: scrollTop,
+              scrollHeight: scrollHeight
+            })
+          })
+        });
+      });
+
+      function update(event) {
+        $scope.$evalAsync(function() {
+          if ($attr.scrollDown == 'true' && event != 'mouseenter') {
+            setTimeout(function () {
+              $($elem).scrollTop($($elem).prop("scrollHeight"));
+            }, 100);
+          }
+          $elem.perfectScrollbar('update');
+        });
+      }
+
+      // This is necessary when you don't watch anything with the scrollbar
+      $elem.bind('mouseenter', update('mouseenter'));
+
+      // Possible future improvement - check the type here and use the appropriate watch for non-arrays
+      if ($attr.refreshOnChange) {
+        $scope.$watchCollection($attr.refreshOnChange, function() {
+          update();
+        });
+      }
+
+      // this is from a pull request - I am not totally sure what the original issue is but seems harmless
+      if ($attr.refreshOnResize) {
+        jqWindow.on('resize', update);
+      }
+
+      $elem.bind('$destroy', function() {
+        jqWindow.off('resize', update);
+        $elem.perfectScrollbar('destroy');
+      });
+
+    }
+  };
+}]);
+
 //! moment.js locale configuration
 //! locale : french (fr)
 //! author : John Fischer : https://github.com/jfroffice
@@ -59,6 +509,14 @@
     return fr;
 
 }));
+/**
+ * ng-scrollbar
+ * @version v0.0.7 - 2015-06-19
+ * @link https://github.com/asafdav/ng-scrollbar
+ * @author Asaf David <asafdav@gmail.com>
+ * @license MIT License, http://www.opensource.org/licenses/MIT
+ */
+"use strict";angular.module("ngScrollbar",[]).directive("ngScrollbar",["$parse","$window",function(a,b){return{restrict:"A",replace:!0,transclude:!0,scope:{showYScrollbar:"=?isBarShown"},link:function(a,c,d){var e,g,h,i,j,k,l,m,n,o,p,q={bottom:d.hasOwnProperty("bottom")},r=angular.element(b),s=!!r[0].addEventListener,t=!!r[0].removeEventListener,u={top:0},v={top:0},w=function(){l={position:"relative",overflow:"hidden","max-width":"100%",height:"100%"},v.height&&(l.height=v.height+"px"),m={position:"absolute",height:u.height+"px",top:u.top+"px"},n={position:"relative","line-height":u.height+"px"},o={position:"relative",top:v.top+"px",overflow:"hidden"}},x=function(){i.css("top",u.top+"px");var a=u.top/v.height;v.top=-Math.round(v.scrollHeight*a),g.css("top",v.top+"px")},y=function(a){var b=a.hasOwnProperty("offsetY")?a.offsetY:a.layerY,c=Math.max(0,Math.min(parseInt(u.trackHeight,10)-parseInt(u.height,10),b));u.top=c,x(),a.stopPropagation()},z=function(a){var b=40,c=a,d=c.detail,e=c.wheelDelta,g=225,h=g-1;return d=d?e&&(f=e/d)?d/f:-d/1.35:e/120,d=1>d?-1>d?(-Math.pow(d,2)-h)/g:d:(Math.pow(d,2)+h)/g,a.delta=Math.min(Math.max(d/2,-1),1),a.delta=a.delta*b,u.top=Math.max(0,Math.min(parseInt(v.height,10)-parseInt(u.height,10),parseInt(u.top,10)-a.delta)),x(),a.preventDefault?void a.preventDefault():!1},A=0,B=function(a,b,c){u.top=Math.max(0,Math.min(parseInt(u.trackHeight,10)-parseInt(u.height,10),c)),a.stopPropagation()},C=function(a){var b=0,c=a.pageY-i[0].scrollTop-A;B(a,b,c),x()},D=function(a){r.off("mousemove",C),r.off("mouseup",D),a.stopPropagation()},E=function(a){var b=0,c=a.originalEvent.changedTouches[0].pageY-i[0].scrollTop-A;B(a,b,c),x()},F=function(a){r.off("touchmove",E),r.off("touchend",F),a.stopPropagation()},G=function(a){var b=void 0!==r[0].onmousewheel?"mousewheel":"DOMMouseScroll";s?a.addEventListener(b,z,!1):a.attachEvent("onmousewheel",z)},H=function(a){var b=void 0!==r[0].onmousewheel?"mousewheel":"DOMMouseScroll";t?a.removeEventListener(b,z,!1):a.detachEvent("onmousewheel",z)},I=function(b){b=q.bottom||b,e=angular.element(c.children()[0]),g=angular.element(e.children()[0]),h=angular.element(e.children()[1]),i=angular.element(angular.element(h.children()[0]).children()[0]),j=angular.element(i.children()[0]),k=angular.element(angular.element(h.children()[0]).children()[1]),v.height=c[0].offsetHeight,v.scrollHeight=g[0].scrollHeight,v.height<v.scrollHeight?(a.showYScrollbar=!0,a.$emit("scrollbar.show"),u.height=Math.round(v.height/v.scrollHeight*v.height),u.trackHeight=v.height,w(),c.css({overflow:"hidden"}),e.css(l),g.css(o),i.css(m),j.css(n),k.bind("click",y),G(g[0]),i.on("mousedown",function(a){A=a.pageY-i[0].offsetTop,r.on("mouseup",D),r.on("mousemove",C),a.preventDefault()}),i.on("touchstart",function(a){A=a.originalEvent.changedTouches[0].pageY-i[0].offsetTop,r.on("touchend",F),r.on("touchmove",E),a.preventDefault()}),b?(q.bottom=!1,u.top=parseInt(v.height,10)-parseInt(u.height,10)):u.top=Math.max(0,Math.min(parseInt(v.height,10)-parseInt(u.height,10),parseInt(u.top,10))),x()):(a.showYScrollbar=!1,a.$emit("scrollbar.hide"),i.off("mousedown"),H(g[0]),g.attr("style","position:relative;top:0"),e.css({height:"100%"}))},J=function(b,c){null!=p&&clearTimeout(p);var d=!!c&&!!c.rollToBottom;p=setTimeout(function(){v.height=null,I(d),a.$$phase||a.$digest(),a.$parent.$$phase||a.$parent.$digest()},72)};I(),d.rebuildOn&&d.rebuildOn.split(" ").forEach(function(b){a.$on(b,J)}),d.hasOwnProperty("rebuildOnResize")&&r.on("resize",J)},template:'<div><div class="ngsb-wrap"><div class="ngsb-container" ng-transclude></div><div class="ngsb-scrollbar" style="position: absolute; display: block;" ng-show="showYScrollbar"><div class="ngsb-thumb-container"><div class="ngsb-thumb-pos" oncontextmenu="return false;"><div class="ngsb-thumb" ></div></div><div class="ngsb-track"></div></div></div></div></div>'}}]);
 (function(angular, factory) {
     'use strict';
 

@@ -84,7 +84,7 @@ module.exports = function($scope, $modalInstance, data, $resource, configService
 		if(stateRequest == '0'){
 			Slipcovers.update({idSlipcover:data.slipcovers._id}, {states: this.slipcover_state_id});
 			Engines.update({idEngine:data.engines._id}, {states: '4'});
-			Request.update({requestId:data._id, state: stateRequest}, null, function(data){
+			Request.update({requestId:data._id, state: stateRequest, dateEnd: new Date()}, null, function(data){
 				$modalInstance.close();
 			});
 		}else{
@@ -115,26 +115,28 @@ module.exports = function($scope, $modalInstance, data, $resource, configService
 	};
 
 	$scope.deleteFile = function(){
-		var confirmation = $modal.open({
-			animation: true,
-			templateUrl: 'app/templates/confirm.html',
-			controller: function($scope, $modalInstance){
-				$scope.closeOnly = function () {
-					$modalInstance.dismiss(true);
-				};
-				$scope.confirm = function(){				
+		swal({
+			title: "Alerte de suppression",
+			text: "Attention, cette action est irreversible",
+			type: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#DD6B55",confirmButtonText: "Supprimer",
+			cancelButtonText: "Annuler",
+			closeOnConfirm: false,
+			closeOnCancel: false }, 
+			function(isConfirm){ 
+				if (isConfirm) {
 					Request.delete({requestId: data._id}).$promise.then(function(data){
-						toaster.pop('success', "La suppression de ressource à bien été prise en compte");
-						$modalInstance.dismiss(true);
-						close(true);
+						swal("Confirmation!", "La suppression de la demande à bien été prise en compte", "success");
 						socketService.emit('public:updateData');
+						$scope.close();
 					}, function(err){
-						toaster.pop('error', "Votre requete à générée une erreur", "Si le problème persiste, veuillez contacter un administrateur | code de l'erreur : " + err.status);
-						$modalInstance.dismiss(true);
+						swal("Erreur", "Votre requete à générée une erreur", "Si le problème persiste, veuillez contacter un administrateur | code de l'erreur : " + err.status, "error")
 					});
-				};
-			}
-		});
+				} else {
+					swal("Annulation", "La demande n'a pas été annulée", "error");
+				}
+			});
 	}
 
 	function close(value){

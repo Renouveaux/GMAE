@@ -8,9 +8,6 @@
 
 		<div class="dash-tile animation-stretchRight">
 			<div class="dash-tile-header">
-				<div class="dash-tile-options hide">
-					<a href="javascript:void(0)" class="btn btn-default" tooltip="Manage Orders" title="Manage Orders"><i class="fa fa-gear"></i></a>
-				</div>
 				<i class="fa fa-cogs"></i> Moteurs Modena
 			</div>
 			<div class="dash-tile-content">
@@ -39,7 +36,7 @@
 
 		<ul class="nav-dash">
 			<li>
-				<a href="javascript:void(0)" uib-tooltip="Ajouter une demande" class="animation-fadeIn" ng-click="createRequest()">
+				<a href="javascript:void(0)" tooltip="Ajouter une demande" class="animation-fadeIn" ng-click="createRequest()">
 					<i class="fa fa-plus"></i>
 				</a>
 			</li>
@@ -103,7 +100,7 @@
 				<tbody>
 					<tr role="row" ng-repeat="item in filteredRecovery = (important | filter: {states : { value :'10'} }: strict)" ng-click="recovery(item)">
 						<td class="text-center">{{item.date | date:'dd/MM/yyyy'}}</td>
-						<td>{{item.users.services.name}}</td>
+						<td>{{item.patients.patientData[0].services.name}}</td>
 						<td>{{item.patients.name | uppercase}}</td>
 						<td class="text-center"><span class="label label-info">{{item.patients.patientData[0].room}}</span></td>
 						<td class="text-center" ng-if="item.hire == null"><i class="fa fa-square-o"></i></td>
@@ -183,10 +180,7 @@
 		</h4>
 
 		<div class="dash-tile animation-stretchLeft">
-			<div class="dash-tile-header">
-				<div class="dash-tile-options hide">
-					<a href="javascript:void(0)" class="btn btn-default" tooltip="Manage Orders" title="Manage Orders"><i class="fa fa-gear"></i></a>
-				</div>				
+			<div class="dash-tile-header">		
 				<i class="fa fa-cogs"></i> Moteurs Nimbus
 			</div>
 			<div class="dash-tile-content">
@@ -219,9 +213,6 @@
 
 		<div class="dash-tile dash-tile-leaf clearfix animation-stretchRight">
 			<div class="dash-tile-header">
-				<div class="dash-tile-options hide">
-					<a href="javascript:void(0)" class="btn btn-default" tooltip="Manage Orders" title="Manage Orders"><i class="fa fa-gear"></i></a>
-				</div>
 				<i class="fa fa-cogs"></i> En Location
 			</div>
 			<div class="dash-tile-content">
@@ -247,9 +238,6 @@
 
 		<div class="dash-tile animation-stretchLeft ng-hide">
 			<div class="dash-tile-header">
-				<div class="dash-tile-options">
-					<a href="javascript:void(0)" class="btn btn-default" tooltip="Manage Orders" title="Manage Orders"><i class="fa fa-gear"></i></a>
-				</div>
 				<i class="fa fa-cogs"></i> En Panne
 			</div>
 			<div class="dash-tile-content">

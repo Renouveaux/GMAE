@@ -1,6 +1,16 @@
 # Change Log
 Tous les changements notable pour ce projet sont documentés dans ce fichier.
 
+### [2.0.3] - 2016-06-19
+#### Changed
+ - Lors des demandes de reprise, garde en mémoire le service choisit par l'utilisateur et rafraichit la liste en conséquence. (Public)
+ - Modification du système d'alert, utilisation de sweetAlert
+ 
+#### Fixed
+ - Suppression total de tous le formulaire après la soumission de ce dernier (public)
+
+
+
 
 ### [2.0.2] - 2015-11-24
 #### Changed

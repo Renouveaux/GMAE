@@ -1,42 +1,406 @@
-module.exports = function($scope, configService){
+module.exports = function($scope, configService, $resource, $http, highchartsNG){
 
-	$scope.labels = ["Jan", "Fev", "Mar", "Avr", "Mai", "Jui", "Juil", "Aou", "Sep", "Oct", "Nov", "Dec"];
-	$scope.series = ['HDPMB', 'Location'];
-	$scope.data = [
-	[65, 59, 80, 81, 56, 55, 40, 50, 55, 45, 98, 42],
-	[28, 48, 40, 19, 86, 27, 90, 56, 42, 23, 5, 25]
-	];
-	$scope.onClick = function (points, evt) {
-		console.log(points, evt);
-	};
+	var getRateYear = $resource(configService.API + '/statistics/rate');
+	var getStatsYear = $resource(configService.API + '/statistics/request');
 
-	$scope.servicesLabels = ["Jan", "Fev", "Mar", "Avr", "Mai", "Jui", "Juil", "Aou", "Sep", "Oct", "Nov", "Dec"];
-	$scope.servicesSeries = ["Med A", "Med B", "Med C", "Chir A", "Chir B", "Chir C", "Ped", "Urg", "UHCD"];
-	$scope.servicesData = [
-	[5, 20, 10, 54, 41, 21, 54, 32],
-	[8, 45, 15, 54, 68, 62, 20, 87],
-	[45, 54, 20, 51, 12, 35, 98, 45],
-	[2, 56, 10, 24, 10, 11, 35, 45],
-	[4, 35, 21 ,01, 24, 65, 12, 75],
-	[32, 12, 45, 21, 65 ,23, 12, 45],
-	[10, 25, 54 ,12 ,51, 32, 12, 02],
-	[20, 32, 45, 12, 0, 2, 45, 65],
-	[9, 14, 45, 18, 12 ,32 ,0 ,54]
-	];
+	$scope.year = ""+new Date().getFullYear()-1+"";
+	var dayByYear = "";
 
 
-/*
+	var load = {
+		getStatsYear: function(year){
+			var y = (year === undefined) ? $scope.year : year;
+			dayByYear = new Date(y,1,1).getMonth() == new Date(y,1,29).getMonth() ? 366 : 365;
+			getStatsYear.query({year: y}, function(d){
 
-$scope.options = {
-  data: [...],
-  dimensions: {},
-  chart: {},
-  state: {}
-};
+				var askByMonth 		= $scope.askByMonth.getHighcharts();
 
-*/
+				$scope.askByMonth.series[0]["data"] = d[0]["data"];
+				$scope.askByMonth.series[1]["data"] = d[1]["data"];
+				$scope.askByMonth.series[2]["data"] = d[2]["data"];
+
+				askByMonth.redraw();
+
+			});
+		},
+		getRateYear: function(year){
+			var y = (year === undefined) ? $scope.year : year;
+
+			
+			getRateYear.query({year: y}, function(d){
+
+				console.log(d)
+				
+				/*var toto = d.map(function(obj){
+					var rObj = {}
+					rObj = obj.label
+					return rObj
+				})
+
+				count = [];
+
+				toto.forEach(function(el){
+					count[el] = count[el] + 1 || 1
+				});
+
+				//console.log(count)
+
+				var ret = count.map(function(obj){
+					return obj
+				})
+
+
+
+				angular.forEach(ret, function(v, i, o){
+					$scope.rateByYear.series[0]["data"].push(v)
+					$scope.rateByYear.xAxis["categories"].push(i)
+
+				})
+
+				var rateByYear = $scope.rateByYear.getHighcharts();
+
+
+				//$scope.rateByYear.series[0]["data"] = ret;
+
+				rateByYear.redraw();
+
+				//console.log(ret)*/
+			})
+
+
+
+		},
+		all: function(){
+			this.getStatsYear();
+			this.getRateYear();
+		}
+	}
+
+	load.all();
+
+	$scope.getYear = function(year){
+		load.getStatsYear(year);
+		load.getRateYear(year)
+	}
+
+	/**
+	 * Get number of request by month for a year and show if they are rented or not
+	 * @type Chart
+	 */
+	 $scope.askByMonth = {
+	 	title: {
+	 		text: ''
+	 	},
+	 	options: {
+	 		chart: {
+	 			type: 'column',
+	 			height: 350
+	 		},
+	 		plotOptions: {
+	 			column: {
+	 				stacking: 'normal',
+	 				dataLabels: {
+	 					enabled: true,
+	 					color: 'white',
+	 					style: {
+	 						textShadow: '0 0 3px black'
+	 					}
+	 				}
+	 			},
+	 			spline: {
+	 				dataLabels: {
+	 					enabled: true,
+	 					color: '#333333'
+	 				}
+	 			}
+	 		},
+	 		legend: {
+	 			align: 'right',
+	 			x: -30,
+	 			verticalAlign: 'top',
+	 			y: 25,
+	 			floating: false,
+	 			backgroundColor: 'white',
+	 			borderColor: '#CCC',
+	 			borderWidth: 1,
+	 			shadow: false
+	 		}
+	 	},
+	 	series: [{
+	 		type: 'spline',
+	 		name: 'Total',
+	 		data: []
+	 	},{
+	 		name: 'HDPMB',
+	 		data: [],
+	 		color: 'rgba(165,170,217,1)',
+	 		enableMouseTracking: false
+	 	},{
+	 		name: 'Location',
+	 		data: [],
+	 		color: 'rgba(126,86,134,.9)',
+	 		enableMouseTracking: false
+	 	}],				
+	 	credits: {
+	 		enabled: false
+	 	},
+	 	yAxis: {
+	 		title: "",
+	 	},
+	 	xAxis: {
+	 		categories: ['Jan', 'Fev', 'Mar', 'Avr', 'Mai', 'Jui', 'Juil', 'Aou', 'Sep', 'Oct', 'Nov', 'Dec']
+	 	},
+	 	loading: false
+	 }
+
+
+
+	 $scope.rateByYear = {
+	 	title: {
+	 		text: ''
+	 	},
+	 	options: {
+	 		chart: {
+	 			type: 'column'
+	 		},
+	 		plotOptions: {
+	 			column: {
+	 				stacking: 'normal',
+	 				dataLabels: {
+	 					enabled: true,
+	 					color: 'white',
+	 					style: {
+	 						textShadow: '0 0 3px black'
+	 					}
+	 				}
+	 			}
+	 		},
+	 		legend: {
+	 			enabled: false
+	 		}
+	 	},
+	 	series: [{
+	 		name: 'HDPMB',
+	 		data: [],
+	 		color: 'rgba(165,170,217,1)',
+	 		enableMouseTracking: false
+	 	}],				
+	 	credits: {
+	 		enabled: false
+	 	},
+	 	yAxis: {
+	 		title: "",
+	 		min: 0,
+	 		max: 110
+	 	},
+	 	xAxis: {
+	 		categories: []
+	 	},
+	 	loading: false
+	 }
 
 
 
 
-}
+	 Highcharts.chart('allotment', {
+
+
+	 	chart: {
+	 		plotBackgroundColor: null,
+	 		plotBorderWidth: null,
+	 		plotShadow: false,
+	 		type: 'pie'
+	 	},
+	 	title: {
+	 		text: ''
+	 	},
+	 	tooltip: {
+	 		pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+	 	},
+	 	plotOptions: {
+	 		pie: {
+	 			allowPointSelect: true,
+	 			cursor: 'pointer',
+	 			dataLabels: {
+	 				enabled: true,
+	 				format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+	 				style: {
+	 					color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+	 				}
+	 			}
+	 		}
+	 	},
+	 	series: [{
+	 		name: 'Taux',
+	 		colorByPoint: true,
+	 		data: [{
+	 			name: 'Médecine A',
+	 			y: 56
+	 		}, {
+	 			name: 'Médecine B',
+	 			y: 24,
+	 			sliced: true,
+	 			selected: true
+	 		}, {
+	 			name: 'Médecine C',
+	 			y: 10
+	 		}, {
+	 			name: 'Médecine D',
+	 			y: 4
+	 		}, {
+	 			name: 'Chirurgie A',
+	 			y: 4
+	 		}, {
+	 			name: 'Chirurgie B',
+	 			y: 2
+	 		}]
+	 	}]
+	 });
+
+
+	 Highcharts.chart('byDayAndServices', {
+
+	 	chart: {
+	 		type: 'column'
+	 	},
+
+	 	title: {
+	 		text: 'Besoin des matelas en jours et par service'
+	 	},
+
+	 	xAxis: {
+	 		categories: ['services']
+	 	},
+
+	 	yAxis: {
+	 		title: "",
+	 		min: 0,
+	 		stackLabels: {
+	 			enabled: true,
+	 			style: {
+	 				fontWeight: 'bold',
+	 				color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+	 			}
+	 		}
+	 	},
+
+	 	legend: {
+	 		align: 'right',
+	 		x: -30,
+	 		verticalAlign: 'top',
+	 		y: 25,
+	 		floating: true,
+	 		backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
+	 		borderColor: '#CCC',
+	 		borderWidth: 1,
+	 		shadow: false
+	 	},
+
+	 	plotOptions: {
+	 		column: {
+	 			stacking: 'normal',
+	 			dataLabels: {
+	 				enabled: true,
+	 				color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
+	 				style: {
+	 					textShadow: '0 0 3px black'
+	 				}
+	 			}
+	 		},line: {
+	 			dataLabels: {
+	 				enabled: true,
+	 				color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
+	 				style: {
+	 					textShadow: '0 0 3px black'
+	 				}
+	 			},
+	 			enableMouseTracking: true
+	 		}
+	 	},
+
+	 	series: [{
+	 		name: 'HDPMB',
+	 		data: [24, 20, 35, 50, 21, 47]
+	 	},{
+	 		name: 'Location',
+	 		data: [28, 48, 40, 19, 86, 27]
+	 	}, {
+	 		type: 'spline',
+	 		name: 'Total',
+	 		data: [93, 107, 120, 100, 142, 82],
+	 		marker: {
+	 			lineWidth: 2,
+	 			lineColor: Highcharts.getOptions().colors[3],
+	 			fillColor: 'white'
+	 		}
+	 	}]
+	 });
+
+
+
+
+
+	 Highcharts.chart('annuelUseEngine', {
+	 	chart: {
+	 		type: 'column'
+	 	},
+	 	title: {
+	 		text: 'Taux d\'utilisation annuel par matelas'
+	 	},
+
+	 	xAxis: {
+	 		type: 'category',
+	 		labels: {
+	 			rotation: -45,
+	 			style: {
+	 				fontSize: '13px',
+	 				fontFamily: 'Verdana, sans-serif'
+	 			}
+	 		}
+	 	},
+	 	yAxis: {
+	 		min: 0,
+	 		max: 110
+	 	},
+	 	legend: {
+	 		enabled: false
+	 	},
+	 	tooltip: {
+	 		pointFormat: '<b>{point.y}</b> %'
+	 	},
+	 	series: [{
+	 		name: 'Taux',
+	 		data: [
+	 		['1', 84],
+	 		['2', 91],
+	 		['3', 78],
+	 		['4', 88],
+	 		['5', 100],
+	 		['6', 98],
+	 		['7', 87],
+	 		['8', 93],
+	 		['9', 97],
+	 		['A', 97],
+	 		['B', 99],
+	 		['C', 100],
+	 		['D', 100],
+	 		['E', 95],
+	 		['F', 96]
+	 		],
+	 		dataLabels: {
+	 			enabled: true,
+	 			rotation: -90,
+	 			color: '#FFFFFF',
+	 			align: 'right',
+                format: '{point.y:.1f}', // one decimal
+                y: 10, // 10 pixels down from the top
+                style: {
+                	fontSize: '13px',
+                	fontFamily: 'Verdana, sans-serif'
+                }
+            }
+        }]
+    });
+
+
+	}

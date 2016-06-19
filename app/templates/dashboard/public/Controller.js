@@ -17,10 +17,11 @@ module.exports = function($scope, $modalInstance, data, $resource, configService
 	};
 
 	$scope.recovery = function(id){
-		Request.update({requestId:id, state: '10'}, null, function(){			
+		Request.update({requestId:id, state: '10', recoveryAsk: new Date()}, null, function(){			
 			toaster.pop('success', "Votre demande de reprise à bien été enregistrée");
 			$modalInstance.close(false);
 			socketService.emit('updateRequest');
+			socketService.emit('refresh');
 		});
 	};
 

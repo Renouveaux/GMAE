@@ -40,8 +40,9 @@ module.exports = function($scope, $resource, configService, $modal, toaster, soc
 			$scope.formData = {};
 			$scope.step = 1;
 			$scope.temp = {};
-			$scope.patientData = {};
-			$scope.currentServices = '';
+			delete $scope.patientData;
+			delete $scope.formPatient;
+			delete $scope.currentServices;
 			toaster.pop('success', "Vos données ont étés sauvegardées");
 			socketService.emit('public:updateData');
 		}, function(err){
@@ -65,13 +66,9 @@ module.exports = function($scope, $resource, configService, $modal, toaster, soc
 	}
 
 	$scope.changeService = function(){
-		if(this.showService == null){
-			forRefresh.service();
-			forRefresh.waiting();
-		}else{
-			forRefresh.service(this.showService);
-			forRefresh.waiting(this.showService);
-		}
+		currentServices = this.showService;
+		forRefresh.service();
+		forRefresh.waiting();
 	}
 
 	$scope.onGoing = function (item) {
@@ -118,18 +115,14 @@ module.exports = function($scope, $resource, configService, $modal, toaster, soc
 	});
 
 	var forRefresh = {
-		waiting: function(serviceId){
-			if(typeof serviceId == 'undefined'){
-				serviceId = loginService.getUserData().service;
-			}
+		waiting: function(){
+			serviceId = (typeof currentServices === 'undefined') ? loginService.getUserData().service : currentServices;
 			request.query({nexist:'dateEnd', state: '7,10,13,14', service: serviceId}, function(data){
 				$scope.waiting = data;
 			})
 		},
 		service: function(serviceId){
-			if(typeof serviceId == 'undefined'){
-				serviceId = loginService.getUserData().service;
-			}
+			serviceId = (typeof currentServices === 'undefined') ? loginService.getUserData().service : currentServices;
 			request.query({state: '5,12', service: serviceId}, function(data){
 				$scope.active = data;
 			})
