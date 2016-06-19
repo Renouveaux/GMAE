@@ -1,0 +1,12 @@
+{
+  "name": "documentation",
+  "version": "1.0.0",
+  "description": "Document-Bootstrap ==================",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run lite",
+    "lite": "lite-server"
+  },
+  "author": "",
+  "license": "ISC"
+}
