@@ -1,19 +1,18 @@
 module.exports = function($scope){
 
-	$scope.status = {
-		isopen: false
-	};
 
-	$scope.toggled = function(open) {
-		console.log('Dropdown is now: ', open);
-	};
+	$scope.periods = [
+      {label:'Semaine dernière', value: 'lastWeek'},
+      {label:'Semaine courante', value: 'thisWeek'},
+      {label:'Mois dernier', value: 'lastMonth'},
+      {label:'Mois courant', value: 'thisMonth'}
+    ];
 
-	$scope.toggleDropdown = function($event) {
-		$event.preventDefault();
-		$event.stopPropagation();
-		$scope.status.isopen = !$scope.status.isopen;
-	};
+    $scope.period = $scope.periods[3]; // red
 
-	$scope.appendToEl = angular.element(document.querySelector('#dropdown-long-content'));
+    $scope.filtrePeriod = function(){
+    	// Catch the new $scope.period
+    }
+
 
 }

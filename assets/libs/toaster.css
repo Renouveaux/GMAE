@@ -64,6 +64,11 @@ button.toast-close-button {
   right: 0;
   width: 100%;
 }
+.toast-top-half-width {
+  top: 50px;
+  right: 25%;
+  left: 25%;
+}
 .toast-bottom-full-width {
   bottom: 0;
   right: 0;

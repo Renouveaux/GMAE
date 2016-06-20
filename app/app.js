@@ -21,6 +21,7 @@ require('../assets/js/socket.io');
 require('../assets/js/ng-table');
 require('sweetalert');
 
+
 Highcharts = require('highcharts');
 require('highcharts/modules/exporting')(Highcharts);
 require('highcharts-ng');

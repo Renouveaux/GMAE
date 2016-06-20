@@ -3,26 +3,18 @@
 
 
 	<div class="col-md-offset-1 col-md-3">
-		<h3 class="page-header-sub">Gestion des filtres</h3>
+		<h3 class="page-header-sub">Filtrage</h3>
 		
-<div class="form-box-content">
-	
-	<div class="form-group">
-		<label class="control-label col-md-3" for="year">Période</label>
-		<div class="col-md-offset-2 col-md-7">
+		<div class="form-box-content">
 
+			<div class="form-group">
+				<label class="control-label col-md-3" for="year">Période</label>
+				<div class="col-md-offset-2 col-md-7">
+					<select class="form-control ng-pristine" ng-model="period" ng-options="period.label for period in periods track by period.value" ng-change="filtrePeriod()"></select>
+				</div>
+			</div>
 
-			<select class="form-control ng-pristine" ng-model="year" name="year" ng-change="getYear(year)" >
-				<option label="Semaine dernière" value="lastWeek"></option>
-				<option label="Semaine courante" value="thisWeek"></option>
-				<option label="Mois dernier" value="lastMonth"></option>
-				<option label="Mois courant" value="thisMonth"></option>
-			</select>
 		</div>
-
-	</div>
-
-</div>
 		
 
 
