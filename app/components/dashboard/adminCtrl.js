@@ -15,31 +15,40 @@ module.exports = function($scope, $resource, configService, $modal, $filter, toa
 	});
 
 	socketService.on('updateEngine', function(){
-		load.modena();
-		load.nimbus();		
+		load.engines();		
 		toaster.pop('info', "Nouvelles données");
 	});
 
 	var load = {
-		modena: function(){
-			request.query({nexist:'dateEnd', state: '5', filter: 'modena'}, function(data){
-				$scope.modena = data;
-			});
-		},
-		nimbus: function(){
-			request.query({nexist:'dateEnd', state: '5', filter: 'nimbus'}, function(data){
-				$scope.nimbus = data;
-			});
-		},
 		important: function(){
 			request.query({nexist:'dateEnd', state: '7,10,12,13,14'}, function(data){
 				$scope.important = data;				
 			});
 		},
 		engines: function(){
-			engines.query({state: '4'}, function(result){
-				$scope.engine = result;
+			engines.query({state: '4'}, function(free){
+			request.query({nexist:'dateEnd', state: '5', filter: 'modena'}, function(data){
+				$scope.modena = angular.copy(free.concat(data));
+				angular.forEach($scope.modena, function (d) {
+					if(typeof d.label !== 'undefined'){
+						d.label = parseFloat(d.label);						
+					}else{
+						d.label = parseFloat(d.engines.label)
+					}
+				});
 			});
+
+			request.query({nexist:'dateEnd', state: '5', filter: 'nimbus'}, function(data){
+				$scope.nimbus = angular.copy(free.concat(data));
+				angular.forEach($scope.nimbus, function (d) {
+					if(typeof d.label !== 'undefined'){
+						d.label = d.label;						
+					}else{
+						d.label = d.engines.label
+					}
+				});
+			});
+		});
 		},
 		slipcovers: function(){
 			slipcovers.query(function(result){
@@ -47,8 +56,8 @@ module.exports = function($scope, $resource, configService, $modal, $filter, toa
 			});
 		},
 		all: function(){
-			this.modena();
-			this.nimbus();
+			//this.modena();
+			//this.nimbus();
 			this.important();
 			this.engines();
 			this.slipcovers();
@@ -56,6 +65,34 @@ module.exports = function($scope, $resource, configService, $modal, $filter, toa
 	}
 
 	load.all();
+
+
+	/*(function combine(){
+
+		engines.query({state: '4'}, function(free){
+			request.query({nexist:'dateEnd', state: '5', filter: 'modena'}, function(data){
+				$scope.modena = angular.copy(free.concat(data));
+				angular.forEach($scope.modena, function (d) {
+					if(typeof d.label !== 'undefined'){
+						d.label = parseFloat(d.label);						
+					}else{
+						d.label = parseFloat(d.engines.label)
+					}
+				});
+			});
+
+			request.query({nexist:'dateEnd', state: '5', filter: 'nimbus'}, function(data){
+				$scope.nimbus = angular.copy(free.concat(data));
+				angular.forEach($scope.nimbus, function (d) {
+					if(typeof d.label !== 'undefined'){
+						d.label = d.label;						
+					}else{
+						d.label = d.engines.label
+					}
+				});
+			});
+		});
+	})();*/
 
 
 	$scope.untreat = function (item) {

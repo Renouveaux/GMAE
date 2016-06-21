@@ -4,8 +4,8 @@ module.exports = function(){
                 'APP_NAME':             'Gmae',
                 'APP_VERSION':          '2.0.2',
                 'SITE_URL' :            'http://gmae.renouveaux.lan',
-                'API':                  'http://192.168.0.254:3000/api/v2',
-                'SOCKET':               'http://192.168.0.254:3000',
+                'API':                  'http://88.184.220.54:3000/api/v2',
+                'SOCKET':               'http://88.184.220.54:3000',
                 'refreshData':          '60',
                 'COUNT': 				'10'
         };

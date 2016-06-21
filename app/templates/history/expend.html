@@ -4,7 +4,7 @@
 			<button class="btn btn-danger pull-right" ng-click="deleteFile()"><i class="fa fa-trash-o"></i></button>
 		</div>
 
-		<h4>Information sur la demande faite le {{data.date | date:'dd/MM/yyyy'}}</h4>
+		<h4>Information sur la demande faite le {{data.date | date:"dd/MM/yyyy"}} à <span class="label label-info ng-binding">{{data.date | date:"HH'H'mm"}}</span></h4>
 
 	</div>
 

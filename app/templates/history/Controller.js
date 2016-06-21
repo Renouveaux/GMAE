@@ -18,7 +18,7 @@ module.exports = function($scope, $modalInstance, data, $resource, configService
 				if (isConfirm) {
 					request.delete({idRequest: data._id}).$promise.then(function(data){
 						swal("Confirmation!", "La suppression de la demande à bien été prise en compte", "success");
-						$scope.close();
+						close(true);
 					}, function(err){
 						swal("Erreur", "Votre requete à générée une erreur", "Si le problème persiste, veuillez contacter un administrateur | code de l'erreur : " + err.status, "error")
 					});
