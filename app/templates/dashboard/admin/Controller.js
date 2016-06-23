@@ -66,7 +66,7 @@ module.exports = function($scope, $modalInstance, data, $resource, configService
 	}
 
 	$scope.saveAssign = function(){
-		Request.update({requestId:data._id, state: '5'}, {value: $scope.modalAssignInfo}, function(data){
+		Request.update({requestId:data._id}, {state: '5', value: $scope.modalAssignInfo}, function(data){
 			$modalInstance.close();
 		});
 	}
@@ -84,7 +84,7 @@ module.exports = function($scope, $modalInstance, data, $resource, configService
 		if(stateRequest == '0'){
 			Slipcovers.update({idSlipcover:data.slipcovers._id}, {states: this.slipcover_state_id});
 			Engines.update({idEngine:data.engines._id}, {states: '4'});
-			Request.update({requestId:data._id, state: stateRequest, dateEnd: new Date()}, null, function(data){
+			Request.update({requestId:data._id}, {state: stateRequest, dateEnd: new Date}, function(data){
 				$modalInstance.close();
 			});
 		}else{

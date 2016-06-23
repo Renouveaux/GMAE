@@ -19,9 +19,8 @@ require('angular-marked');
 require('../assets/js/textAngular');
 require('../assets/js/socket.io');
 require('../assets/js/ng-table');
-require('../assets/js/angular-input-date.js');
+require('../assets/js/ng-table-to-csv');
 require('sweetalert');
-
 
 Highcharts = require('highcharts');
 require('highcharts/modules/exporting')(Highcharts);
@@ -39,7 +38,8 @@ Configuration de notre application
 
 ********************************************************************/
 angular
-.module('gmae', ['ui.router', 'angular-jwt', 'shared', 'components', 'ui.bootstrap', 'jsonFormatter', 'yaru22.angular-timeago', 'ngFileUpload', 'hc.marked', 'highcharts-ng', 'ngInputDate'])
+.module('gmae', ['ui.router', 'angular-jwt', 'shared', 'components', 'ui.bootstrap', 
+				'jsonFormatter', 'yaru22.angular-timeago', 'ngFileUpload', 'hc.marked', 'highcharts-ng', 'ngTableToCsv'])
 .config( require('./router') )
 .run( require('./init') )
 .controller('AppController', require('./appCtrl.js') )

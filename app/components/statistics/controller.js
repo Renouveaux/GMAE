@@ -25,48 +25,21 @@ module.exports = function($scope, configService, $resource, $http, highchartsNG)
 		},
 		getRateYear: function(year){
 			var y = (year === undefined) ? $scope.year : year;
-
-			
+			dayByYear = new Date(y,1,1).getMonth() == new Date(y,1,29).getMonth() ? 335 : 334;
 			getRateYear.query({year: y}, function(d){
+			var rateByYear 		= $scope.rateByYear.getHighcharts();
 
-				console.log(d)
-				
-				/*var toto = d.map(function(obj){
-					var rObj = {}
-					rObj = obj.label
-					return rObj
+
+				angular.forEach(d[0], function(v){
+					/*v.total = Math.round((v.total / dayByYear ) * 100);
+					v.label = parseFloat(v.label)*/
+					$scope.rateByYear.series[0]["data"].push(Math.round((v.total / dayByYear ) * 100) )
+					$scope.rateByYear.xAxis["categories"].push(v.label)
 				})
 
-				count = [];
+			rateByYear.redraw();
 
-				toto.forEach(function(el){
-					count[el] = count[el] + 1 || 1
-				});
-
-				//console.log(count)
-
-				var ret = count.map(function(obj){
-					return obj
-				})
-
-
-
-				angular.forEach(ret, function(v, i, o){
-					$scope.rateByYear.series[0]["data"].push(v)
-					$scope.rateByYear.xAxis["categories"].push(i)
-
-				})
-
-				var rateByYear = $scope.rateByYear.getHighcharts();
-
-
-				//$scope.rateByYear.series[0]["data"] = ret;
-
-				rateByYear.redraw();
-
-				//console.log(ret)*/
 			})
-
 
 
 		},
@@ -80,7 +53,7 @@ module.exports = function($scope, configService, $resource, $http, highchartsNG)
 
 	$scope.getYear = function(year){
 		load.getStatsYear(year);
-		load.getRateYear(year)
+		//load.getRateYear(year)
 	}
 
 	/**

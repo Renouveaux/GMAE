@@ -1,14 +1,14 @@
 
 module.exports = function($scope, $resource, configService, ngTableParams, $filter, $modal, toaster){
 
-	var request = $resource(configService.API + '/request');
+	var request = $resource(configService.API + '/request/:requestId', null, { 'update': {method: 'PUT'} });
 	
 	$scope.tableParams  = new ngTableParams({
 		page: 1,
 		count: configService.COUNT,
 		sorting: {
 			date : 'desc'
-		}
+		},
 	}, {
 		getData: function ($defer, params) {
 			request.query(function(data){
@@ -57,7 +57,19 @@ module.exports = function($scope, $resource, configService, ngTableParams, $filt
     }
 
     $scope.save = function(d, r){
-    	console.log(d)
+
+		var newDate = d.dateEnd.split('/');
+
+		day = parseInt(newDate[0],10);
+		month = parseInt(newDate[1],10);
+		year = parseInt(newDate[2],10);
+
+		var date = new Date(''+year+'-'+month+'-'+day+' 05:00').toISOString()
+
+    	request.update({requestId:d._id}, {dateEnd: date}, function(data){
+			$scope.tableParams.data.splice(r, 1);
+		});
+
     }
 
 

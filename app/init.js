@@ -1,5 +1,5 @@
 module.exports = function($rootScope, $state, loginService, jwtHelper){
-
+	
 	$rootScope.$on('$stateChangeStart', function (ev, toState) {
 
 		var token = localStorage.getItem('id_token');

@@ -6,28 +6,28 @@ module.exports = function($scope, $resource, configService, $modal, $filter, toa
 
 	socketService.on('refresh', function(){
 		load.all();
-		toaster.pop('info', "Nouvelles données");
+		//toaster.pop('info', "Nouvelles données");
 	});
 
 	socketService.on('updateRequest', function(){
 		load.important();
-		toaster.pop('info', "Nouvelles données");
+		//toaster.pop('info', "Nouvelles données");
 	});
 
 	socketService.on('updateEngine', function(){
 		load.engines();		
-		toaster.pop('info', "Nouvelles données");
+		//toaster.pop('info', "Nouvelles données");
 	});
 
 	var load = {
 		important: function(){
-			request.query({nexist:'dateEnd', state: '7,10,12,13,14'}, function(data){
+			request.query({state: '7,10,12,13,14'}, function(data){
 				$scope.important = data;				
 			});
 		},
 		engines: function(){
 			engines.query({state: '4'}, function(free){
-			request.query({nexist:'dateEnd', state: '5', filter: 'modena'}, function(data){
+			request.query({state: '5', filter: 'modena'}, function(data){
 				$scope.modena = angular.copy(free.concat(data));
 				angular.forEach($scope.modena, function (d) {
 					if(typeof d.label !== 'undefined'){
@@ -38,7 +38,7 @@ module.exports = function($scope, $resource, configService, $modal, $filter, toa
 				});
 			});
 
-			request.query({nexist:'dateEnd', state: '5', filter: 'nimbus'}, function(data){
+			request.query({state: '5', filter: 'nimbus'}, function(data){
 				$scope.nimbus = angular.copy(free.concat(data));
 				angular.forEach($scope.nimbus, function (d) {
 					if(typeof d.label !== 'undefined'){
