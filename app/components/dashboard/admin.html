@@ -21,20 +21,12 @@
 						</tr>
 					</thead>
 					<tbody>
-
-						<!--<tr ng-repeat="item in combined = modena.concat(engine) | filter: 'modena' | orderBy : 'label'" ng-click="openInfo(item)">
-							<td data-title="'Label'"><span class="label label-success"># {{item.engines.label}} {{item.label}}</span></td>
-							<td class="hidden-xs hidden-sm hidden-md" data-title="'Service'">{{item.patients.patientData[0].services.name}}</td>
-							<td class="hidden-xs hidden-sm hidden-md" data-title="'Chambre'"><span class="label label-info">{{item.patients.patientData[0].room}}</span></td>
-							<td data-title="'Status'" ><span class="badge badge-{{item.states.style}}">&nbsp;</span></td>
-						</tr>-->
 						<tr ng-repeat="item in combined = modena | filter: 'modena' | orderBy : 'label'" ng-click="openInfo(item)">
 							<td data-title="'Label'"><span class="label label-success"># {{item.label}}</span></td>
 							<td class="hidden-xs hidden-sm hidden-md" data-title="'Service'">{{item.patients.patientData[0].services.name}}</td>
 							<td class="hidden-xs hidden-sm hidden-md" data-title="'Chambre'"><span class="label label-info">{{item.patients.patientData[0].room}}</span></td>
 							<td data-title="'Status'" ><span class="badge badge-{{item.states.style}}">&nbsp;</span></td>
 						</tr>
-
 					</tbody>
 				</table>
 			</div>
@@ -201,21 +193,12 @@
 							</tr>
 						</thead>
 						<tbody>
-
-							<!--<tr ng-repeat="item in combined = engine.concat(nimbus) | filter: 'nimbus' | orderBy : 'label'" ng-click="openInfo(item)">
-								<td data-title="'Label'"><span class="label label-success"># {{item.engines.label}} {{item.label}}</span></td>
-								<td class="hidden-xs hidden-sm hidden-md" data-title="'Service'">{{item.patients.patientData[0].services.name}}</td>
-								<td class="hidden-xs hidden-sm hidden-md" data-title="'Chambre'"><span class="label label-info">{{item.patients.patientData[0].room}}</span></td>
-								<td data-title="'Status'" ><span class="badge badge-{{item.states.style}}">&nbsp;</span></td>
-							</tr>-->
-
 							<tr ng-repeat="item in combined = nimbus | filter: 'nimbus' | orderBy : 'label'" ng-click="openInfo(item)">
 								<td data-title="'Label'"><span class="label label-success"># {{item.label}}</span></td>
 								<td class="hidden-xs hidden-sm hidden-md" data-title="'Service'">{{item.patients.patientData[0].services.name}}</td>
 								<td class="hidden-xs hidden-sm hidden-md" data-title="'Chambre'"><span class="label label-info">{{item.patients.patientData[0].room}}</span></td>
 								<td data-title="'Status'" ><span class="badge badge-{{item.states.style}}">&nbsp;</span></td>
 							</tr>
-
 						</tbody>
 					</table>
 				</div>
@@ -261,6 +244,14 @@
 				</div>
 			</div>
 		</div>
+
+		<ul class="nav-dash" ng-if="userPrivilege >= '4'">
+			<li>
+				<a tooltip="Ajouter d'une demande complete" class="animation-fadeIn" href="#/createRequest">
+					<i class="fa fa-retweet"></i>
+				</a>
+			</li>
+		</ul>
 
 
 	</div>

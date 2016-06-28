@@ -51,7 +51,7 @@
                 <th class="sortable" ng-click="tableParams.sorting({'dateEnd' : tableParams.isSortBy('dateEnd', 'asc') ? 'desc' : 'asc'})" rowspan="2">
                     <i class="gi gi-exit"></i> Sortie
                 </th>
-                <th>
+                <th ng-if="userPrivilege >= '4'">
                     Action
                 </th>
             </tr>
@@ -72,7 +72,7 @@
                       <input type="text" name="dateEnd" ng-model="item.dateEnd" class="editable-input form-control input-sm" required/>
                   </div>
               </td>
-              <td>
+              <td ng-if="userPrivilege >= '4'">
                 <button class="btn btn-primary btn-sm" ng-click="save(item, index)" ng-if="item.isEditing"><span class="glyphicon glyphicon-ok"></span></button>
                 <button class="btn btn-default btn-sm" ng-click="cancel(item, index)" ng-if="item.isEditing"><span class="glyphicon glyphicon-remove"></span></button>
                 <button class="btn btn-default btn-sm" ng-click="item.isEditing = true" ng-if="!item.isEditing"><span class="glyphicon glyphicon-pencil"></span></button>

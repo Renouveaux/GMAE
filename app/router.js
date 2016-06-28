@@ -97,6 +97,15 @@ module.exports = function($httpProvider, $stateProvider, $urlRouterProvider, jwt
 		}
 	});
 
+	$stateProvider.state('createRequest', {
+		url: "/createRequest",
+		templateUrl: "app/components/createRequest/index.html",
+		controller: require('./components/createRequest'),
+		data: {
+			privilege: 2
+		}
+	});
+
 	jwtInterceptorProvider.tokenGetter = function() {
 		return localStorage.getItem('id_token');
 	};

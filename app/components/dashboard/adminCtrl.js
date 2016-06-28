@@ -26,7 +26,7 @@ module.exports = function($scope, $resource, configService, $modal, $filter, toa
 			});
 		},
 		engines: function(){
-			engines.query({state: '4'}, function(free){
+			engines.query({state: '4, 6'}, function(free){
 			request.query({state: '5', filter: 'modena'}, function(data){
 				$scope.modena = angular.copy(free.concat(data));
 				angular.forEach($scope.modena, function (d) {

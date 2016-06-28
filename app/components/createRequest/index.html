@@ -1,0 +1,75 @@
+<div class="row col-md-8">
+
+	<form method="post" class="form-horizontal form-box" onsubmit="return false;">
+		<h4 class="form-box-header">Enregistrement d'une demande non présente dans la GMAE</h4>
+		<div class="form-box-content">
+
+			<div class="form-group">
+				<div class="form-group" >
+					<label class="control-label col-md-2"><strong>Service</strong></label>
+					<div class="col-md-10">
+						<select class="form-control" ng-model="currentServices" ng-options="data._id as data.name for data in services" ng-change="selectService()" required name="currentServices"></select>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="col-md-4">
+					<div class="input-group" ng-class="{'has-error': patient.civility.$invalid}">
+						<span class="input-group-addon">Civilité</span>
+						<select class="form-control ng-pristine ng-valid" ng-model="formData.civility" name="civility" required>
+							<option value="M." selected="">M.</option>
+							<option value="Mme">Mme</option>
+						</select>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<div class="input-group" ng-class="{'has-error': patient.name.$invalid}">
+						<span class="input-group-addon">Nom</span>
+						<input type="text" ng-model="formPatient.name" class="form-control" name="name" ng-minlength="2" required>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<div class="input-group" ng-class="{'has-error': patient.lastname.$invalid}">
+						<span class="input-group-addon">Prénom</span>
+						<input type="text" ng-model="formPatient.lastname" class="form-control" ng-minlength="2" name="lastname" required>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="form-group">
+				<div class="col-sm-6">
+					<div class="input-group" ng-class="{'has-error': patient.braden.$invalid}">
+						<span class="input-group-addon">Score de Braden</span>
+						<input type="number" ng-model="patientData.braden" class="form-control ng-pristine ng-invalid ng-invalid-required" name="braden" required min="0" max="23">
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="input-group" ng-class="{'has-error': patient.room.$invalid}">
+						<span class="input-group-addon">chambre</span>
+						<input type="number" ng-model="patientData.room" class="form-control ng-pristine ng-invalid ng-invalid-required" name="room" required>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="form-group">
+				<div class="col-sm-4">
+
+				<small class="c-gray">Status - {{radioModel || 'null'}}</small>
+
+				<p class="f-500 c-black m-b-5">Choix du moteur</p>
+					<div class="btn-group">
+        <label class="btn btn-primary" ng-model="radioModel" uib-btn-radio="'Left'">Left</label>
+        <label class="btn btn-primary" ng-model="radioModel" uib-btn-radio="'Middle'">Middle</label>
+        <label class="btn btn-primary" ng-model="radioModel" uib-btn-radio="'Right'">Right</label>
+    </div>
+				</div>
+			</div>
+
+		</div>
+
+	</form>
+
+</div>
