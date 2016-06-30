@@ -13,7 +13,7 @@
                 <i class="gi gi-big" ng-class="{'gi-user': data.patients.civility == 'M.', 'gi-girl': data.patients.civility == 'Mme'}"></i>
             </span>
 
-            <div class="media-body col-md-4">
+            <div class="col-md-4">
                 <h4 class="media-heading">{{data.patients.civility}} {{data.patients.name}}</h4>
                 <p><em>Score de Braden :<em> <b>{{data.patients.patientData[0].braden}}</b></p>
                 <p><em>Chambre :</em> <b>{{data.patients.patientData[0].room}}</b></p>
@@ -22,7 +22,7 @@
                 <p><em>Status de la demande : </em> <b>{{data.states.name}}</b> </p>
             </div>
 
-            <div class="media-body col-md-4" ng-if="data.states.value == '7'">
+            <div class="col-md-4" ng-if="data.states.value == '7'">
             <h4 class="media-heading">Annuler <i class="fa fa-eraser"></i></h4>
                <p>Cette demande n'à pas encore été traitée, vous pouvez encore l'annuler si besoin</p>
                <button class="btn btn-warning" ng-click="cancel()">Annuler</button>

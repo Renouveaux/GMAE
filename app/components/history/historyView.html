@@ -74,8 +74,9 @@
               </td>
               <td ng-if="userPrivilege >= '4'">
                 <button class="btn btn-primary btn-sm" ng-click="save(item, index)" ng-if="item.isEditing"><span class="glyphicon glyphicon-ok"></span></button>
-                <button class="btn btn-default btn-sm" ng-click="cancel(item, index)" ng-if="item.isEditing"><span class="glyphicon glyphicon-remove"></span></button>
+                <button class="btn btn-default btn-sm" ng-click="item.isEditing = false" ng-if="item.isEditing"><span class="glyphicon glyphicon-remove"></span></button>
                 <button class="btn btn-default btn-sm" ng-click="item.isEditing = true" ng-if="!item.isEditing"><span class="glyphicon glyphicon-pencil"></span></button>
+                <button class="btn btn-default btn-sm" ng-if="!item.isEditing"><span class="glyphicon glyphicon-info-sign" ng-click="expend(item, index)"></span></button>
             </td>
         </tr>
 

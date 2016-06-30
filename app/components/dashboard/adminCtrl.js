@@ -1,4 +1,4 @@
-module.exports = function($scope, $resource, configService, $modal, $filter, toaster, socketService){
+module.exports = function($scope, $resource, configService, $uibModal, $filter, toaster, socketService){
 
 	var request = $resource(configService.API + '/request');
 	var engines = $resource(configService.API + '/engines');
@@ -27,28 +27,28 @@ module.exports = function($scope, $resource, configService, $modal, $filter, toa
 		},
 		engines: function(){
 			engines.query({state: '4, 6'}, function(free){
-			request.query({state: '5', filter: 'modena'}, function(data){
-				$scope.modena = angular.copy(free.concat(data));
-				angular.forEach($scope.modena, function (d) {
-					if(typeof d.label !== 'undefined'){
-						d.label = parseFloat(d.label);						
-					}else{
-						d.label = parseFloat(d.engines.label)
-					}
+				request.query({state: '5', filter: 'modena'}, function(data){
+					$scope.modena = angular.copy(free.concat(data));
+					angular.forEach($scope.modena, function (d) {
+						if(typeof d.label !== 'undefined'){
+							d.label = parseFloat(d.label);						
+						}else{
+							d.label = parseFloat(d.engines.label)
+						}
+					});
 				});
-			});
 
-			request.query({state: '5', filter: 'nimbus'}, function(data){
-				$scope.nimbus = angular.copy(free.concat(data));
-				angular.forEach($scope.nimbus, function (d) {
-					if(typeof d.label !== 'undefined'){
-						d.label = d.label;						
-					}else{
-						d.label = d.engines.label
-					}
+				request.query({state: '5', filter: 'nimbus'}, function(data){
+					$scope.nimbus = angular.copy(free.concat(data));
+					angular.forEach($scope.nimbus, function (d) {
+						if(typeof d.label !== 'undefined'){
+							d.label = d.label;						
+						}else{
+							d.label = d.engines.label
+						}
+					});
 				});
 			});
-		});
 		},
 		slipcovers: function(){
 			slipcovers.query(function(result){
@@ -66,38 +66,9 @@ module.exports = function($scope, $resource, configService, $modal, $filter, toa
 
 	load.all();
 
-
-	/*(function combine(){
-
-		engines.query({state: '4'}, function(free){
-			request.query({nexist:'dateEnd', state: '5', filter: 'modena'}, function(data){
-				$scope.modena = angular.copy(free.concat(data));
-				angular.forEach($scope.modena, function (d) {
-					if(typeof d.label !== 'undefined'){
-						d.label = parseFloat(d.label);						
-					}else{
-						d.label = parseFloat(d.engines.label)
-					}
-				});
-			});
-
-			request.query({nexist:'dateEnd', state: '5', filter: 'nimbus'}, function(data){
-				$scope.nimbus = angular.copy(free.concat(data));
-				angular.forEach($scope.nimbus, function (d) {
-					if(typeof d.label !== 'undefined'){
-						d.label = d.label;						
-					}else{
-						d.label = d.engines.label
-					}
-				});
-			});
-		});
-	})();*/
-
-
 	$scope.untreat = function (item) {
 
-		var modalInstance = $modal.open({
+		var modalInstance = $uibModal.open({
 			animation: true,
 			templateUrl: 'app/templates/dashboard/admin/untreat.html',
 			controller: require('../../templates/dashboard/admin/Controller.js'),
@@ -116,20 +87,22 @@ module.exports = function($scope, $resource, configService, $modal, $filter, toa
 	};
 
 	$scope.openInfo = function(item){
-		var modalInstance = $modal.open({
-			animation: true,
-			templateUrl: 'app/templates/dashboard/admin/info.html',
-			controller: require('../../templates/dashboard/admin/Controller.js'),
-			resolve: {
-				data: function(){
-					return item
+		if(typeof item.mail !== 'undefined'){			
+			var modalInstance = $uibModal.open({
+				animation: true,
+				templateUrl: 'app/templates/dashboard/admin/info.html',
+				controller: require('../../templates/dashboard/admin/Controller.js'),
+				resolve: {
+					data: function(){
+						return item
+					}
 				}
-			}
-		});
+			});
+		}
 	}
 
 	$scope.recovery = function(item){
-		var modalInstance = $modal.open({
+		var modalInstance = $uibModal.open({
 			animation: true,
 			templateUrl: 'app/templates/dashboard/admin/recovery.html',
 			controller: require('../../templates/dashboard/admin/Controller.js'),
@@ -147,7 +120,7 @@ module.exports = function($scope, $resource, configService, $modal, $filter, toa
 	}
 
 	$scope.delivery = function(item){
-		var modalInstance = $modal.open({
+		var modalInstance = $uibModal.open({
 			animation: true,
 			templateUrl: 'app/templates/dashboard/admin/delivery.html',
 			controller: require('../../templates/dashboard/admin/Controller.js'),
@@ -164,7 +137,7 @@ module.exports = function($scope, $resource, configService, $modal, $filter, toa
 	}
 
 	$scope.recovered = function(item){
-		var modalInstance = $modal.open({
+		var modalInstance = $uibModal.open({
 			animation: true,
 			templateUrl: 'app/templates/dashboard/admin/recovered.html',
 			controller: require('../../templates/dashboard/admin/Controller.js'),
@@ -180,7 +153,7 @@ module.exports = function($scope, $resource, configService, $modal, $filter, toa
 	}
 
 	$scope.createRequest = function(){
-		var modalInstance = $modal.open({
+		var modalInstance = $uibModal.open({
 			animation: true,
 			templateUrl: 'app/templates/dashboard/admin/createRequest.html',
 			controller: require('../../templates/dashboard/admin/createRequest.js')

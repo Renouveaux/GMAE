@@ -1,5 +1,5 @@
 
-module.exports = function($scope, $resource, configService, ngTableParams, $filter, $modal, toaster){
+module.exports = function($scope, $resource, configService, ngTableParams, $filter, $uibModal, toaster){
 
 	var request = $resource(configService.API + '/request/:requestId', null, { 'update': {method: 'PUT'} });
 	
@@ -34,7 +34,7 @@ module.exports = function($scope, $resource, configService, ngTableParams, $filt
 	$scope.tableParams.settings().$scope = $scope;
 
 	$scope.expend = function(item, index){
-		var Instance = $modal.open({
+		var Instance = $uibModal.open({
 			animation: true,
 			templateUrl: 'app/templates/history/expend.html',
 			controller: require('../../templates/history/Controller.js'),

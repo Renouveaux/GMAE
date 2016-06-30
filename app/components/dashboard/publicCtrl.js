@@ -1,5 +1,5 @@
 
-module.exports = function($scope, $resource, configService, $modal, toaster, socketService, loginService){
+module.exports = function($scope, $resource, configService, $uibModal, toaster, socketService, loginService){
 
 	var Services = $resource(configService.API + '/services/:idService', null, { 'update': {method: 'PUT'} });
 	var request = $resource(configService.API + '/request/:requestId', null, { 'update': {method: 'PUT'} });
@@ -72,7 +72,7 @@ module.exports = function($scope, $resource, configService, $modal, toaster, soc
 	}
 
 	$scope.onGoing = function (item) {
-		var modalInstance = $modal.open({
+		var modalInstance = $uibModal.open({
 			animation: true,
 			templateUrl: 'app/templates/dashboard/public/status.html',
 			controller: require('../../templates/dashboard/public/Controller.js'),
@@ -85,7 +85,7 @@ module.exports = function($scope, $resource, configService, $modal, toaster, soc
 	};
 
 	$scope.action = function (item) {
-		var modalInstance = $modal.open({
+		var modalInstance = $uibModal.open({
 			animation: true,
 			templateUrl: 'app/templates/dashboard/public/action.html',
 			controller: require('../../templates/dashboard/public/Controller.js'),

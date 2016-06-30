@@ -27,18 +27,19 @@ module.exports = function($scope, configService, $resource, $http, highchartsNG)
 			var y = (year === undefined) ? $scope.year : year;
 			dayByYear = new Date(y,1,1).getMonth() == new Date(y,1,29).getMonth() ? 335 : 334;
 			getRateYear.query({year: y}, function(d){
-			var rateByYear 		= $scope.rateByYear.getHighcharts();
+				var rateByYear = $scope.rateByYear.getHighcharts();
 
+				var average = 0;
+				var enginesLength = 0;
 
-				angular.forEach(d[0], function(v){
-					/*v.total = Math.round((v.total / dayByYear ) * 100);
-					v.label = parseFloat(v.label)*/
+				angular.forEach(d[0], function(v, i, a){
+					enginesLength++;
+					average = average + v.total;
 					$scope.rateByYear.series[0]["data"].push(Math.round((v.total / dayByYear ) * 100) )
 					$scope.rateByYear.xAxis["categories"].push(v.label)
 				})
-
-			rateByYear.redraw();
-
+				$scope.rateByYear.yAxis.plotLines[0].value = Math.round((average / dayByYear ) * 100) / enginesLength;
+				rateByYear.redraw();
 			})
 
 
@@ -162,9 +163,19 @@ module.exports = function($scope, configService, $resource, $http, highchartsNG)
 	 		enabled: false
 	 	},
 	 	yAxis: {
-	 		title: "",
+	 		labels: {
+	 			formatter: function() {
+	 				return this.value + ' %';
+	 			}
+	 		},
+	 		title: "Hello",
 	 		min: 0,
-	 		max: 110
+	 		max: 100,
+	 		plotLines: [{
+	 			color: 'red',
+	 			value: 0,
+	 			width: 2
+	 		}]
 	 	},
 	 	xAxis: {
 	 		categories: []
@@ -376,4 +387,15 @@ module.exports = function($scope, configService, $resource, $http, highchartsNG)
     });
 
 
+	}
+
+
+	Highcharts.PlotLineOrBand.prototype.update = function (newOptions){
+		var plotBand = this;
+		Highcharts.extend(plotBand.options, newOptions);
+		if (plotBand.svgElem) {
+			plotBand.svgElem.destroy();
+			plotBand.svgElem = undefined;
+			plotBand.render();
+		}
 	}

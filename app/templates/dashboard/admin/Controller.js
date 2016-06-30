@@ -1,4 +1,4 @@
-module.exports = function($scope, $modalInstance, data, $resource, configService, Upload, $filter, toaster, $modal, socketService){
+module.exports = function($scope, $uibModalInstance, data, $resource, configService, Upload, $filter, toaster, socketService){
 
 	var properties = $resource(configService.API + '/engines/properties');
 	var Engines = $resource(configService.API + '/engines/:idEngine', null, { 'update': {method: 'PUT'} });
@@ -67,14 +67,14 @@ module.exports = function($scope, $modalInstance, data, $resource, configService
 
 	$scope.saveAssign = function(){
 		Request.update({requestId:data._id}, {state: '5', value: $scope.modalAssignInfo}, function(data){
-			$modalInstance.close();
+			$uibModalInstance.close();
 		});
 	}
 
 	// Note si le fournisseur à bien livré le materiel dans le service.
 	$scope.saveDelivery = function(){
 		Hire.update({hireId:data.hire._id, state: '12'}, {value: $scope.formData.hire, request: data._id}, function(data){
-			$modalInstance.close();
+			$uibModalInstance.close();
 		});
 	}
 
@@ -85,18 +85,18 @@ module.exports = function($scope, $modalInstance, data, $resource, configService
 			Slipcovers.update({idSlipcover:data.slipcovers._id}, {states: this.slipcover_state_id});
 			Engines.update({idEngine:data.engines._id}, {states: '4'});
 			Request.update({requestId:data._id}, {state: stateRequest, dateEnd: new Date}, function(data){
-				$modalInstance.close();
+				$uibModalInstance.close();
 			});
 		}else{
 			Hire.update({hireId:data.hire._id, state: stateRequest, mail: true, template: 'stop', subject: 'Arrêt de location'}, {value: {dateEnd: Date.now()}, information: data, request: data._id}, function(data){
-				$modalInstance.close();
+				$uibModalInstance.close();
 			});
 		}
 	}
 
 	$scope.saveRecovered = function(){
 		Hire.update({hireId:data.hire._id, state: "0", mail: false}, {value: $scope.recover.hire, request: data._id}, function(data){
-			$modalInstance.close();
+			$uibModalInstance.close();
 		});
 	}
 
@@ -106,7 +106,7 @@ module.exports = function($scope, $modalInstance, data, $resource, configService
 			method: 'PUT',
 			data: {file: file, data : JSON.stringify($scope.modalAssignInfo)}
 		}).success(function(data, status, headers, config) {
-			$modalInstance.close(false);
+			$uibModalInstance.close(false);
 			toaster.pop('success', "Information", "Informations enregistrées, mail envoyé");
 		}).error(function(err) {
 			toaster.pop('error', "Information", "Une erreur est survenue, merci de recommencer");
@@ -140,7 +140,7 @@ module.exports = function($scope, $modalInstance, data, $resource, configService
 	}
 
 	function close(value){
-		$modalInstance.dismiss(value);
+		$uibModalInstance.dismiss(value);
 	}
 
 	$scope.close = function () {

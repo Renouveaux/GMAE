@@ -1,6 +1,18 @@
 # Change Log
 Tous les changements notable pour ce projet sont documentés dans ce fichier.
 
+### [2.1.1] - 2016-06-29
+#### Changed
+ - Mise à jour de la version bootstrap. Meilleur réactivité de l'UI
+ - Ajout pour l'admin, de la possibilité d'ajouter d'anciennent demande non présente sur l'appli
+
+#### Fixed
+ - Correction d'affichage des modals.
+
+#### Information
+ - Cette mise à jour est en versio beta. Le passage vers bootstrap 3.3.6 risque de perturber le fonctionnement de l'application pour certains utilisateurs.
+
+
 ### [2.0.5] - 2016-06-22
 #### Changed
  - Ajout du filtre global sur le tableau Historique

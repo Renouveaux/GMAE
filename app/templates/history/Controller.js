@@ -1,4 +1,4 @@
-module.exports = function($scope, $modalInstance, data, $resource, configService, $filter, toaster, $modal){
+module.exports = function($scope, $uibModalInstance, data, $resource, configService){
 
 	$scope.data = data;
 
@@ -29,7 +29,7 @@ module.exports = function($scope, $modalInstance, data, $resource, configService
 	}
 
 	function close(value){
-		$modalInstance.dismiss(value);
+		$uibModalInstance.dismiss(value);
 	}
 
 	$scope.close = function () {
