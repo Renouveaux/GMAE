@@ -9511,6 +9511,10 @@ THEME DEEPWOOD
   border-color: #927254 !important;
 }
 /* For empty Href Bootstrap and Angular */
+* {
+  font-size: 12px;
+  line-height: 1;
+}
 .nav,
 .pagination,
 .carousel,

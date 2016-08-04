@@ -29,6 +29,8 @@ module.exports = function($scope, configService, $resource, $http, highchartsNG)
 			getRateYear.query({year: y}, function(d){
 				var rateByYear = $scope.rateByYear.getHighcharts();
 
+				$scope.rateByYear.series[0]["data"] = [];
+
 				var average = 0;
 				var enginesLength = 0;
 
@@ -54,7 +56,7 @@ module.exports = function($scope, configService, $resource, $http, highchartsNG)
 
 	$scope.getYear = function(year){
 		load.getStatsYear(year);
-		//load.getRateYear(year)
+		load.getRateYear(year)
 	}
 
 	/**

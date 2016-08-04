@@ -1,4 +1,13 @@
-module.exports = function( $scope, socketService, loginService){
+module.exports = function( $scope, socketService, loginService, $resource){
+
+	$scope.init = function(){
+
+		// did the user have seen the new release ?
+
+
+
+
+	}
 
 	socketService.on('connect', function(test){
 		$scope.looseConnect = false;

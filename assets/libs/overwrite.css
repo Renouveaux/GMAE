@@ -1,5 +1,11 @@
 /* For empty Href Bootstrap and Angular */
 
+* {
+   font-size: 12px;
+   line-height: 1;
+}
+
+
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
 
 #login-logo{

@@ -1,6 +1,14 @@
 # Change Log
 Tous les changements notable pour ce projet sont documentés dans ce fichier.
 
+### [2.1.3] - 2016-06-30
+#### Update
+ - #manage : Les informations présentes sur la page "manage" sur le nombre de moteurs et de housses, dispo en panne etc... sont maintenant en temps réel.
+
+### [2.1.2] - 2016-06-30
+
+
+
 ### [2.1.1] - 2016-06-29
 #### Changed
  - Mise à jour de la version bootstrap. Meilleur réactivité de l'UI

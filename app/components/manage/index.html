@@ -6,9 +6,9 @@
     <div class="plan">
       <h2 class="plan-header" ng-click="goNext('/manage/engine')"><i class="fa fa-cogs"></i> Moteurs</h2>
       <ul class="manage fa-ul">
-        <li class="text-info"><i class="fa fa-li">5</i> <strong>En Service</strong></li>
-        <li class="text-success"><i class="fa fa-li">4</i> <strong>Disponible</strong></li>
-        <li class="text-danger"><i class="fa fa-li">0</i> <strong>En Panne</strong></li>
+        <li class="text-info"><i class="fa fa-li">{{(engines | filter: 'Utilisé').length}}</i> <strong>En Service</strong></li>
+        <li class="text-success"><i class="fa fa-li">{{(engines | filter: 'En Stock').length}}</i> <strong>Disponible</strong></li>
+        <li class="text-danger"><i class="fa fa-li">{{(engines | filter: 'En Panne').length}}</i> <strong>En Panne</strong></li>
       </ul>
     </div>
   </div>
@@ -17,9 +17,9 @@
     <div class="plan">
       <h2 class="plan-header" ng-click="goNext('/manage/slipcover')"><i class="fa fa-shield"></i> Housses</h2>
       <ul class="manage fa-ul">
-        <li class="text-info"><i class="fa fa-li">8</i> <strong>En Service</strong></li>
-        <li class="text-success"><i class="fa fa-li">4</i> <strong>Disponible</strong></li>
-        <li class="text-danger"><i class="fa fa-li">6</i> <strong>En Laverie</strong></li>
+        <li class="text-info"><i class="fa fa-li">{{(slipcovers | filter: 'Utilisé').length}}</i> <strong>En Service</strong></li>
+        <li class="text-success"><i class="fa fa-li">{{(slipcovers | filter: 'En Stock').length}}</i> <strong>Disponible</strong></li>
+        <li class="text-danger"><i class="fa fa-li">{{(slipcovers | filter: 'Laverie').length}}</i> <strong>En Laverie</strong></li>
       </ul>
     </div>
   </div>
