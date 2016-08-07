@@ -27,7 +27,7 @@ module.exports = function($scope, $resource, configService, $uibModal, $filter, 
 		},
 		engines: function(){
 			engines.query({state: '4, 6'}, function(free){
-				request.query({state: '5', filter: 'modena'}, function(data){
+				request.query({state: '5, 10', filter: 'modena'}, function(data){
 					$scope.modena = angular.copy(free.concat(data));
 					angular.forEach($scope.modena, function (d) {
 						if(typeof d.label !== 'undefined'){
@@ -38,7 +38,7 @@ module.exports = function($scope, $resource, configService, $uibModal, $filter, 
 					});
 				});
 
-				request.query({state: '5', filter: 'nimbus'}, function(data){
+				request.query({state: '5, 10', filter: 'nimbus'}, function(data){
 					$scope.nimbus = angular.copy(free.concat(data));
 					angular.forEach($scope.nimbus, function (d) {
 						if(typeof d.label !== 'undefined'){
