@@ -29,32 +29,32 @@ gulp.task('browser-sync', function () {
 });
 
 gulp.task('browserify', function() {
-    gulp.src('app/app.js')
-    .pipe(browserify({
-        insertGlobals: true
-    }))
-    .pipe(rename('app.min.js'))
-    .pipe(gulp.dest('dist/js'))
+  gulp.src('app/app.js')
+  .pipe(browserify({
+    insertGlobals: true
+  }))
+  .pipe(rename('app.min.js'))
+  .pipe(gulp.dest('dist/js'))
 });
 
 gulp.task('watch', function() {
-    gulp.watch('app/**/*.js',['browserify']);
-    gulp.watch('assets/css/*.css', ['concat-css']);
+  gulp.watch('app/**/*.js',['browserify']);
+  gulp.watch('assets/css/*.css', ['concat-css']);
     //gulp.watch('assets/js/*.js', ['concat-js']);
     gulp.watch('assets/less/**/*.less', ['less']);
     gulp.watch('assets/libs/**/*.css', ['less']);
-});
+  });
 
 gulp.task('concat-css', function () {
-    gulp.src('assets/css/*.css')
-    .pipe(concat('style.css'))
-    .pipe(gulp.dest('dist/css'));
+  gulp.src('assets/css/*.css')
+  .pipe(concat('style.css'))
+  .pipe(gulp.dest('dist/css'));
 });
 
 gulp.task('concat-js', function () {
-    gulp.src('assets/js/*.js')
-    .pipe(concat('lib.js'))
-    .pipe(gulp.dest('dist/js'));
+  gulp.src('assets/js/*.js')
+  .pipe(concat('lib.js'))
+  .pipe(gulp.dest('dist/js'));
 });
 
 gulp.task('minify-css', function() {
@@ -75,11 +75,28 @@ gulp.task('minify-js', function() {
 
 gulp.task('less', function () {
   gulp.src('assets/less/**/*.less')
-    .pipe(cssjoin())
-    .pipe(less())
-    .pipe(concat('less.css'))
-    .pipe(gulp.dest('assets/css'));
+  .pipe(cssjoin())
+  .pipe(less())
+  .pipe(concat('less.css'))
+  .pipe(gulp.dest('assets/css'));
 });
+
+gulp.task('libs', function(){
+  gulp.src('assets/libs/**')
+  .pipe(gulp.dest('dist/libs'))
+})
+
+
+gulp.task('copy-img', function(){
+  gulp.src('assets/img/**')
+  .pipe(gulp.dest('dist/img'))
+})
+
+gulp.task('copy-fonts', function(){
+  gulp.src('assets/fonts/**')
+  .pipe(gulp.dest('dist/fonts'))
+})
 
 
 gulp.task('default', ['browser-sync', 'watch']);
+gulp.task('build', ['browserify', 'concat-css', 'concat-js', 'less', 'libs', 'copy-img', 'minify-js', 'copy-fonts'])

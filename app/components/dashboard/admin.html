@@ -23,8 +23,10 @@
 					<tbody>
 						<tr ng-repeat="item in combined = modena | filter: 'modena' | orderBy : 'label'" ng-click="openInfo(item)">
 							<td data-title="'Label'"><span class="label label-success"># {{item.label}}</span></td>
-							<td class="hidden-xs hidden-sm hidden-md" data-title="'Service'">{{item.patients.patientData[0].services.name}}</td>
-							<td class="hidden-xs hidden-sm hidden-md" data-title="'Chambre'"><span class="label label-info">{{item.patients.patientData[0].room}}</span></td>
+							<td class="hidden-xs hidden-sm hidden-md" style="font-size: 13px" data-title="'Service'">{{item.patients.patientData[0].services.name}}</td>
+							<td data-title="'Chambre'">
+								<span class="label label-info">{{item.patients.patientData[0].room}}</span>
+							</td>
 							<td data-title="'Status'" ><span class="badge badge-{{item.states.style}}">&nbsp;</span></td>
 						</tr>
 					</tbody>
@@ -195,8 +197,10 @@
 						<tbody>
 							<tr ng-repeat="item in combined = nimbus | filter: 'nimbus' | orderBy : 'label'" ng-click="openInfo(item)">
 								<td data-title="'Label'"><span class="label label-success"># {{item.label}}</span></td>
-								<td class="hidden-xs hidden-sm hidden-md" data-title="'Service'">{{item.patients.patientData[0].services.name}}</td>
-								<td class="hidden-xs hidden-sm hidden-md" data-title="'Chambre'"><span class="label label-info">{{item.patients.patientData[0].room}}</span></td>
+								<td class="hidden-xs hidden-sm hidden-md" style="font-size: 13px;" data-title="'Service'">{{item.patients.patientData[0].services.name}}</td>
+								<td data-title="'Chambre'">
+									<span class="label label-info">{{item.patients.patientData[0].room}}</span>
+									</td>
 								<td data-title="'Status'" ><span class="badge badge-{{item.states.style}}">&nbsp;</span></td>
 							</tr>
 						</tbody>

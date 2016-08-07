@@ -1,4 +1,4 @@
-module.exports = function($scope, $modalInstance, $resource, configService, toaster, socketService){
+module.exports = function($scope, $uibModalInstance, $resource, configService, toaster, socketService){
 
 	var Services = $resource(configService.API + '/services/:idService', null, { 'update': {method: 'PUT'} });
 	var request = $resource(configService.API + '/request/:requestId', null, { 'update': {method: 'PUT'} });
@@ -42,7 +42,7 @@ module.exports = function($scope, $modalInstance, $resource, configService, toas
 			$scope.currentServices = '';
 			toaster.pop('success', "Vos données ont étés sauvegardées");
 			socketService.emit('public:updateData');
-			$modalInstance.dismiss(true);
+			$uibModalInstance.dismiss(true);
 			close(true);
 		}, function(err){
 			toaster.pop('error', "Une erreure est survenue durant la sauvegarde, merci de réitérer vote demande", "Si le problème persiste, veuillez contacter un administrateur");
@@ -50,7 +50,7 @@ module.exports = function($scope, $modalInstance, $resource, configService, toas
 	}
 
 	function close(value){
-		$modalInstance.dismiss(value);
+		$uibModalInstance.dismiss(value);
 	}
 
 	$scope.close = function () {

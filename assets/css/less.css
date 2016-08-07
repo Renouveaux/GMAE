@@ -6995,7 +6995,7 @@ button.close {
 body.login {
   padding: 80px 0 0;
   background-color: #f9f9f9;
-  background-image: url('../img/login_bg.png');
+  background-image: url("../img/login_bg.png");
   background-position: top center;
   background-repeat: repeat-y;
   background-size: 6px 1px;
@@ -7345,7 +7345,7 @@ body {
   line-height: 32px;
   color: #999;
   font-size: 12px;
-  background-image: url('../img/template/nav_info_seperator.png');
+  background-image: url("../img/template/nav_info_seperator.png");
   background-position: top left;
   background-repeat: no-repeat;
   background-size: 5px 30px;
@@ -9235,10 +9235,10 @@ a:focus {
 /* Put your high resolution backgrounds here */
 @media only screen and (-Webkit-min-device-pixel-ratio: 1.5), only screen and (-moz-min-device-pixel-ratio: 1.5), only screen and (-o-min-device-pixel-ratio: 3/2), only screen and (min-device-pixel-ratio: 1.5) {
   body.login {
-    background-image: url('../img/template/login_bg@2x.png');
+    background-image: url("../img/template/login_bg@2x.png");
   }
   #nav-info > li {
-    background-image: url('../img/template/nav_info_seperator@2x.png');
+    background-image: url("../img/template/nav_info_seperator@2x.png");
   }
   .table thead .sorting {
     background-image: url('../img/jquery.datatables/sort_both@2x.png');
@@ -9511,10 +9511,12 @@ THEME DEEPWOOD
   border-color: #927254 !important;
 }
 /* For empty Href Bootstrap and Angular */
+/*
 * {
-  font-size: 12px;
-  line-height: 1;
+   font-size: 12px;
+   line-height: 1;
 }
+*/
 .nav,
 .pagination,
 .carousel,
@@ -9917,6 +9919,11 @@ a.circle:focus {
 .button.button-disabled:hover {
   background: #008fd5;
 }
+@font-face {
+  font-family: 'Glyphicons Halflings';
+  src: url("../fonts/glyphicons.halflings.pro/glyphicons-halflings-regular.eot");
+  src: url('../fonts/glyphicons.halflings.pro/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url("../fonts/glyphicons.halflings.pro/glyphicons-halflings-regular.woff2") format('woff2'), url("../fonts/glyphicons.halflings.pro/glyphicons-halflings-regular.woff") format('woff'), url("../fonts/glyphicons.halflings.pro/glyphicons-halflings-regular.ttf") format('truetype'), url('../fonts/glyphicons.halflings.pro/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+}
 /*
  *  Document   : plugins.css
  *  Author     : Various
@@ -9950,8 +9957,8 @@ a.circle:focus {
  */
 @font-face {
   font-family: 'FontAwesome';
-  src: url('fonts/fontawesome/fontawesome-webfont.eot?v=4.3.0');
-  src: url('fonts/fontawesome/fontawesome-webfont.eot?#iefix&v=4.3.0') format('embedded-opentype'), url('fonts/fontawesome/fontawesome-webfont.woff2?v=4.3.0') format('woff2'), url('fonts/fontawesome/fontawesome-webfont.woff?v=4.3.0') format('woff'), url('fonts/fontawesome/fontawesome-webfont.ttf?v=4.3.0') format('truetype'), url('fonts/fontawesome/fontawesome-webfont.svg?v=4.3.0#fontawesomeregular') format('svg');
+  src: url('../fonts/fontawesome/fontawesome-webfont.eot?v=4.3.0');
+  src: url('../fonts/fontawesome/fontawesome-webfont.eot?#iefix&v=4.3.0') format('embedded-opentype'), url('../fonts/fontawesome/fontawesome-webfont.woff2?v=4.3.0') format('woff2'), url('../fonts/fontawesome/fontawesome-webfont.woff?v=4.3.0') format('woff'), url('../fonts/fontawesome/fontawesome-webfont.ttf?v=4.3.0') format('truetype'), url('../fonts/fontawesome/fontawesome-webfont.svg?v=4.3.0#fontawesomeregular') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -14002,23 +14009,23 @@ Twitter:  @jankovarik
 */
 @font-face {
   font-family: 'Glyphicons Regular';
-  src: url(fonts/glyphicons.pro/glyphicons-regular.eot);
-  src: url(fonts/glyphicons.pro/glyphicons-regular.eot?#iefix) format('embedded-opentype'), url(fonts/glyphicons.pro/glyphicons-regular.woff) format('woff'), url(fonts/glyphicons.pro/glyphicons-regular.ttf) format('truetype'), url(fonts/glyphicons.pro/glyphicons-regular.svg#glyphiconsregular) format('svg');
+  src: url("../fonts/glyphicons.pro/glyphicons-regular.eot");
+  src: url(../fonts/glyphicons.pro/glyphicons-regular.eot?#iefix) format('embedded-opentype'), url("../fonts/glyphicons.pro/glyphicons-regular.woff") format('woff'), url("../fonts/glyphicons.pro/glyphicons-regular.ttf") format('truetype'), url(../fonts/glyphicons.pro/glyphicons-regular.svg#glyphiconsregular) format('svg');
 }
 @font-face {
   font-family: 'Glyphicons Halflings Regular';
-  src: url(fonts/glyphicons.halflings.pro/glyphicons-halflings-regular.eot);
-  src: url(fonts/glyphicons.halflings.pro/glyphicons-halflings-regular.eot?#iefix) format('embedded-opentype'), url(fonts/glyphicons.halflings.pro/glyphicons-halflings-regular.woff) format('woff'), url(fonts/glyphicons.halflings.pro/glyphicons-halflings-regular.ttf) format('truetype'), url(fonts/glyphicons.halflings.pro/glyphicons-halflings-regular.svg#glyphicons_halflingsregular) format('svg');
+  src: url("../fonts/glyphicons.halflings.pro/glyphicons-halflings-regular.eot");
+  src: url(../fonts/glyphicons.halflings.pro/glyphicons-halflings-regular.eot?#iefix) format('embedded-opentype'), url("../fonts/glyphicons.halflings.pro/glyphicons-halflings-regular.woff") format('woff'), url("../fonts/glyphicons.halflings.pro/glyphicons-halflings-regular.ttf") format('truetype'), url(../fonts/glyphicons.halflings.pro/glyphicons-halflings-regular.svg#glyphicons_halflingsregular) format('svg');
 }
 @font-face {
   font-family: 'Glyphicons Social Regular';
-  src: url(fonts/glyphicons.social.pro/glyphicons-social-regular.eot);
-  src: url(fonts/glyphicons.social.pro/glyphicons-social-regular.eot?#iefix) format('embedded-opentype'), url(fonts/glyphicons.social.pro/glyphicons-social-regular.woff) format('woff'), url(fonts/glyphicons.social.pro/glyphicons-social-regular.ttf) format('truetype'), url(fonts/glyphicons.social.pro/glyphicons-social-regular.svg#glyphicons_socialregular) format('svg');
+  src: url("../fonts/glyphicons.social.pro/glyphicons-social-regular.eot");
+  src: url(../fonts/glyphicons.social.pro/glyphicons-social-regular.eot?#iefix) format('embedded-opentype'), url("../fonts/glyphicons.social.pro/glyphicons-social-regular.woff") format('woff'), url("../fonts/glyphicons.social.pro/glyphicons-social-regular.ttf") format('truetype'), url(../fonts/glyphicons.social.pro/glyphicons-social-regular.svg#glyphicons_socialregular) format('svg');
 }
 @font-face {
   font-family: 'Glyphicons Filetypes Regular';
-  src: url(fonts/glyphicons.filetypes.pro/glyphicons-filetypes-regular.eot);
-  src: url(fonts/glyphicons.filetypes.pro/glyphicons-filetypes-regular.eot?#iefix) format('embedded-opentype'), url(fonts/glyphicons.filetypes.pro/glyphicons-filetypes-regular.woff) format('woff'), url(fonts/glyphicons.filetypes.pro/glyphicons-filetypes-regular.ttf) format('truetype'), url(fonts/glyphicons.filetypes.pro/glyphicons-filetypes-regular.svg#glyphicons_filetypesregular) format('svg');
+  src: url("../fonts/glyphicons.filetypes.pro/glyphicons-filetypes-regular.eot");
+  src: url(../fonts/glyphicons.filetypes.pro/glyphicons-filetypes-regular.eot?#iefix) format('embedded-opentype'), url("../fonts/glyphicons.filetypes.pro/glyphicons-filetypes-regular.woff") format('woff'), url("../fonts/glyphicons.filetypes.pro/glyphicons-filetypes-regular.ttf") format('truetype'), url(../fonts/glyphicons.filetypes.pro/glyphicons-filetypes-regular.svg#glyphicons_filetypesregular) format('svg');
 }
 .fi,
 .gi,
