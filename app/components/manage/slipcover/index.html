@@ -1,84 +1,89 @@
+
 <h3 class="page-header page-header-top ng-scope"><i class="fa fa-shield"></i> Housses <small>Page de gestion des housses appartenant à l'hôpital</small></h3>
 
-<div class="col-sm-5">
-	<div class="dash-tile">
-		<div class="dash-tile-header" style="text-align: center">
-			Liste des housses
-		</div>
-		<div class="dash-tile-content">
+<div class="row">
 
-			<ul class="thumbnails clearfix remove-margin butt">
-				<li ng-repeat="(index, item) in filteredNew = (slipcovers | orderBy: '+label')" class="butt-{{item.states.style}}" ng-click="selectSlipcover(item._id)">
-					<span>#{{item.label}}</span>
-				</li>
-			</ul>
-			<div class="no-data" ng-hide="filteredNew.length">
-				<img src="dist/img/no_data.png" alt="">
+	<div class="col-sm-5">
+		<div class="dash-tile">
+			<div class="dash-tile-header" style="text-align: center">
+				Liste des housses
 			</div>
+			<div class="dash-tile-content">
 
+				<ul class="thumbnails clearfix remove-margin butt">
+					<li ng-repeat="(index, item) in filteredNew = (slipcovers | orderBy: '+label')" class="butt-{{item.states.style}}" ng-click="selectSlipcover(item._id)">
+						<span>#{{item.label}}</span>
+					</li>
+				</ul>
+				<div class="no-data" ng-hide="filteredNew.length">
+					<img src="dist/img/no_data.png" alt="">
+				</div>
+
+			</div>
 		</div>
 	</div>
-</div>
 
 
 
-<div class="col-md-7 ng-hide" ng-show="formSlipcover">
-	
-	<form action="page_form_components.html" method="post" class="form-horizontal form-box" onsubmit="return false;">
-		<h4 class="form-box-header">{{titre}} {{selectedSlipcover.slipcoverProperties.model}} # {{selectedSlipcover.label}}</h4>
-		<div class="form-box-content">
+	<div class="col-md-7 ng-hide" ng-show="formSlipcover">
+		
+		<form action="page_form_components.html" method="post" class="form-horizontal form-box" onsubmit="return false;">
+			<h4 class="form-box-header">{{titre}} {{selectedSlipcover.slipcoverProperties.model}} # {{selectedSlipcover.label}}</h4>
+			<div class="form-box-content">
 
-			<div class="form-group">
-				<div class="col-md-2">
-					<div class="input-group">
-						<span class="input-group-addon"><i class="fa fa-bookmark"></i></span>
-						<input type="text" ng-model="selectedSlipcover.label" class="form-control" name="serial" placeholder="Label ou identifiant" required disabled>
+				<div class="form-group">
+					<div class="col-md-2">
+						<div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-bookmark"></i></span>
+							<input type="text" ng-model="selectedSlipcover.label" class="form-control" name="serial" placeholder="Label ou identifiant" required disabled>
+						</div>
+					</div>
+					<div class="col-md-5">
+						<div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-gavel"></i></span>
+							<select class="form-control" ng-model="currentManufacturer" ng-options="data._id as data.name for data in manufacturers" ng-change="selectManufacturer()" required disabled>
+							</select>
+						</div>
+					</div>	
+					<div class="col-md-5">
+						<div class="input-group ng-hide" ng-show="slipcover_properties">
+							<span class="input-group-addon"><i class="fa fa-tag"></i></span>
+							<select class="form-control" ng-model="currentProperties" ng-options="data._id as data.model for data in slipcover_properties" ng-change="selectProperties()" required disabled>
+							</select>
+						</div>
 					</div>
 				</div>
-				<div class="col-md-5">
-					<div class="input-group">
-						<span class="input-group-addon"><i class="fa fa-gavel"></i></span>
-						<select class="form-control" ng-model="currentManufacturer" ng-options="data._id as data.name for data in manufacturers" ng-change="selectManufacturer()" required disabled>
-						</select>
-					</div>
-				</div>	
-				<div class="col-md-5">
-					<div class="input-group ng-hide" ng-show="slipcover_properties">
-						<span class="input-group-addon"><i class="fa fa-tag"></i></span>
-						<select class="form-control" ng-model="currentProperties" ng-options="data._id as data.model for data in slipcover_properties" ng-change="selectProperties()" required disabled>
-						</select>
-					</div>
-				</div>
-			</div>
 
-			<div class="form-group">
-				
-				<div class="col-md-12">
-					<div class="input-group states">
+				<div class="form-group">
+					
+					<div class="col-md-12">
+						<div class="input-group states">
 
 							<label class="switch switch-{{n.style}}" ng-repeat="n in states">
 								<p>{{n.name}}</p>
 								<input type="radio" name="pageSet" ng-model="currentState" ng-value="n._id" ng-click="selectState(n)"><span></span>
 							</label>						
 
+						</div>
 					</div>
 				</div>
+
+				<div class="form-group form-actions">
+
+					<div class="col-md-4 ng-hide">
+						<button class="btn btn-danger" ng-click="deleteSlipcover(selectedSlipcover.slipcoverProperties._id);" ><i class="fa fa-trash-o"></i> Supprimer</button>
+					</div>
+					<div class="col-md-4 ng-hide">
+						<button class="btn btn-success" ng-click="showModal(selectedSlipcover.engineProperties.engineProperties._id)"><i class="fa fa-plus"></i> Ajouter un modèle de housse</button>
+					</div>
+					<div class="col-md-4 col-md-offset-8">
+						<button class="btn btn-success" ng-click="modifySlipcover(selectedSlipcover._id)" ng-disabled="form.$invalid"><i class="fa fa-floppy-o"></i> Enregistrer</button>
+					</div>
+
+				</div>
 			</div>
+		</form>
 
-			<div class="form-group form-actions">
-
-				<div class="col-md-4 ng-hide">
-					<button class="btn btn-danger" ng-click="deleteSlipcover(selectedSlipcover.slipcoverProperties._id);" ><i class="fa fa-trash-o"></i> Supprimer</button>
-				</div>
-				<div class="col-md-4 ng-hide">
-					<button class="btn btn-success" ng-click="showModal(selectedSlipcover.engineProperties.engineProperties._id)"><i class="fa fa-plus"></i> Ajouter un modèle de housse</button>
-				</div>
-				<div class="col-md-4 col-md-offset-8">
-					<button class="btn btn-success" ng-click="modifySlipcover(selectedSlipcover._id)" ng-disabled="form.$invalid"><i class="fa fa-floppy-o"></i> Enregistrer</button>
-				</div>
-
-			</div>
-		</div>
-	</form>
+	</div>
 
 </div>
