@@ -1,117 +1,121 @@
 <h3 class="page-header page-header-top ng-scope"><i class="fa fa-cogs"></i> Moteurs <small>Page de gestion des moteurs appartenant à l'hôpital</small></h3>
 
-<div class="col-sm-4">
-	<div class="dash-tile dash-tile-2x">
-		<div class="dash-tile-header" style="text-align: center">
-			Liste des moteurs
-		</div>
-		<div class="dash-tile-content">
+<div class="row">
 
-			<ul class="thumbnails clearfix remove-margin butt">
-				<li ng-repeat="(index, item) in filteredNew = (engines | orderBy: '+label')" class="butt-{{item.states.style}}" ng-click="selectEngine(item._id)">
-					<span>#{{item.label}}</span>
-				</li>
-			</ul>
-			<div class="no-data" ng-hide="filteredNew.length">
-				<img src="dist/img/no_data.png" alt="">
+	<div class="col-sm-4">
+		<div class="dash-tile dash-tile-2x">
+			<div class="dash-tile-header" style="text-align: center">
+				Liste des moteurs
 			</div>
+			<div class="dash-tile-content">
 
+				<ul class="thumbnails clearfix remove-margin butt">
+					<li ng-repeat="(index, item) in filteredNew = (engines | orderBy: '+label')" class="butt-{{item.states.style}}" ng-click="selectEngine(item._id)">
+						<span>#{{item.label}}</span>
+					</li>
+				</ul>
+				<div class="no-data" ng-hide="filteredNew.length">
+					<img src="dist/img/no_data.png" alt="">
+				</div>
+
+			</div>
 		</div>
 	</div>
-</div>
 
-<div class="col-md-8 ng-hide" ng-show="formEngine">
-	
-	<form action="page_form_components.html" method="post" class="form-horizontal form-box" onsubmit="return false;">
-		<h4 class="form-box-header">{{titre}} {{selectedEngine.engineProperties.model}} # {{selectedEngine.label}}</h4>
-		<div class="form-box-content">
+	<div class="col-md-8 ng-hide" ng-show="formEngine">
+		
+		<form action="page_form_components.html" method="post" class="form-horizontal form-box" onsubmit="return false;">
+			<h4 class="form-box-header">{{titre}} {{selectedEngine.engineProperties.model}} # {{selectedEngine.label}}</h4>
+			<div class="form-box-content">
 
-			<div class="form-group">
-				<div class="col-md-4">
-					<div class="input-group">
-						<span class="input-group-addon"><i class="fa fa-barcode"></i></span>
-						<input type="text" ng-model="selectedEngine.serial" class="form-control" name="serial" placeholder="N° de série" required disabled>
+				<div class="form-group">
+					<div class="col-md-4">
+						<div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-barcode"></i></span>
+							<input type="text" ng-model="selectedEngine.serial" class="form-control" name="serial" placeholder="N° de série" required disabled>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-book"></i></span>
+							<input type="text" ng-model="selectedEngine.inventory" class="form-control" name="inventory" placeholder="N° d'inventaire" required disabled>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-bookmark"></i></span>
+							<input type="text" ng-model="selectedEngine.label" class="form-control" name="serial" placeholder="Label ou identifiant" required disabled>
+						</div>
 					</div>
 				</div>
-				<div class="col-md-4">
-					<div class="input-group">
-						<span class="input-group-addon"><i class="fa fa-book"></i></span>
-						<input type="text" ng-model="selectedEngine.inventory" class="form-control" name="inventory" placeholder="N° d'inventaire" required disabled>
+
+				<div class="form-group">				
+					<div class="col-md-6">
+						<div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-gavel"></i></span>
+							<select class="form-control" ng-model="currentManufacturer" ng-options="data._id as data.name for data in manufacturers" ng-change="selectManufacturer()" required disabled>
+							</select>
+						</div>
+					</div>			
+
+
+					<div class="col-xs-6">
+						<div class="input-group ng-hide" ng-show="engine_properties">
+							<span class="input-group-addon"><i class="fa fa-tag"></i></span>
+							<select class="form-control" ng-model="currentProperties" ng-options="data._id as data.model for data in engine_properties" ng-change="selectProperties()" required disabled>
+							</select>
+						</div>
+						<div ng-hide="engine_properties">
+							<input type="text" placeholder="Choissisez un contructeur" class="form-control " disabled  ng-hide="selectedEngine.engineProperties.manufacturers._id"/>
+							<button class="btn btn-danger" ng-click="showModal()" ng-hide="!selectedEngine.engineProperties.manufacturers._id">Ajouter des propriétés pour ce moteur</button>
+						</div>
+
 					</div>
 				</div>
-				<div class="col-md-4">
-					<div class="input-group">
-						<span class="input-group-addon"><i class="fa fa-bookmark"></i></span>
-						<input type="text" ng-model="selectedEngine.label" class="form-control" name="serial" placeholder="Label ou identifiant" required disabled>
-					</div>
-				</div>
-			</div>
-
-			<div class="form-group">				
-				<div class="col-md-6">
-					<div class="input-group">
-						<span class="input-group-addon"><i class="fa fa-gavel"></i></span>
-						<select class="form-control" ng-model="currentManufacturer" ng-options="data._id as data.name for data in manufacturers" ng-change="selectManufacturer()" required disabled>
-						</select>
-					</div>
-				</div>			
-
-
-				<div class="col-xs-6">
-					<div class="input-group ng-hide" ng-show="engine_properties">
-						<span class="input-group-addon"><i class="fa fa-tag"></i></span>
-						<select class="form-control" ng-model="currentProperties" ng-options="data._id as data.model for data in engine_properties" ng-change="selectProperties()" required disabled>
-						</select>
-					</div>
-					<div ng-hide="engine_properties">
-						<input type="text" placeholder="Choissisez un contructeur" class="form-control " disabled  ng-hide="selectedEngine.engineProperties.manufacturers._id"/>
-						<button class="btn btn-danger" ng-click="showModal()" ng-hide="!selectedEngine.engineProperties.manufacturers._id">Ajouter des propriétés pour ce moteur</button>
-					</div>
-
-				</div>
-			</div>
-			
-
-
-			<div class="innerB form-group ng-hide" ng-show="formType != 'new'" >
-				<div class="col-sm-4"></div>
-				<div class="col-sm-4">
-					<button class="btn btn-success" ng-click="showModal()" ng-show="selectedEngine.engineProperties.engineProperties.manufacturers._id">
-						<i class="fa fa-plus"></i> Ajouter un model de moteur
-					</button>
-				</div>
-			</div>
-
-
-
-			<div class="form-group">
 				
-				<div class="col-md-12">
-					<div class="input-group states">
 
-						<label class="switch switch-{{n.style}}" ng-repeat="n in states">
-							<p>{{n.name}}</p>
-							<input type="radio" name="pageSet" ng-model="currentState" ng-value="n._id" ng-click="selectState(n)"><span></span>
-						</label>						
 
+				<div class="innerB form-group ng-hide" ng-show="formType != 'new'" >
+					<div class="col-sm-4"></div>
+					<div class="col-sm-4">
+						<button class="btn btn-success" ng-click="showModal()" ng-show="selectedEngine.engineProperties.engineProperties.manufacturers._id">
+							<i class="fa fa-plus"></i> Ajouter un model de moteur
+						</button>
 					</div>
 				</div>
+
+
+
+				<div class="form-group">
+					
+					<div class="col-md-12">
+						<div class="input-group states">
+
+							<label class="switch switch-{{n.style}}" ng-repeat="n in states">
+								<p>{{n.name}}</p>
+								<input type="radio" name="pageSet" ng-model="currentState" ng-value="n._id" ng-click="selectState(n)"><span></span>
+							</label>						
+
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group form-actions">
+
+					<div class="col-md-4 ng-hide">
+						<button class="btn btn-danger" ng-click="deleteEngine(selectedEngine.engineProperties._id);" ><i class="fa fa-trash-o"></i> Supprimer</button>
+					</div>
+					<div class="col-md-4 ng-hide">
+						<button class="btn btn-success" ng-click="showModal(selectedEngine.engineProperties.engineProperties._id)"><i class="fa fa-plus"></i> Ajouter un modèle de moteur</button>
+					</div>
+					<div class="col-md-4 col-md-offset-8">
+						<button class="btn btn-success" ng-click="modifyEngine(selectedEngine._id)" ng-disabled="form.$invalid"><i class="fa fa-floppy-o"></i> Save</button>
+					</div>
+
+				</div>
 			</div>
+		</form>
 
-			<div class="form-group form-actions">
-
-				<div class="col-md-4 ng-hide">
-					<button class="btn btn-danger" ng-click="deleteEngine(selectedEngine.engineProperties._id);" ><i class="fa fa-trash-o"></i> Supprimer</button>
-				</div>
-				<div class="col-md-4 ng-hide">
-					<button class="btn btn-success" ng-click="showModal(selectedEngine.engineProperties.engineProperties._id)"><i class="fa fa-plus"></i> Ajouter un modèle de moteur</button>
-				</div>
-				<div class="col-md-4 col-md-offset-8">
-					<button class="btn btn-success" ng-click="modifyEngine(selectedEngine._id)" ng-disabled="form.$invalid"><i class="fa fa-floppy-o"></i> Save</button>
-				</div>
-
-			</div>
-		</div>
-	</form>
+	</div>
 
 </div>
