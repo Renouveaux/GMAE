@@ -1,6 +1,10 @@
 # Change Log
 Tous les changements notable pour ce projet sont documentés dans ce fichier.
 
+### [2.1.4] - 2016-08-18
+#### Update
+ - #History : Ajout d'un système de trie plus possibilité de filtrage sur un type de moteur
+
 ### [2.1.3] - 2016-06-30
 #### Update
  - #manage : Les informations présentes sur la page "manage" sur le nombre de moteurs et de housses, dispo en panne etc... sont maintenant en temps réel.

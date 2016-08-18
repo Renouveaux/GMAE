@@ -1,37 +1,38 @@
 
 module.exports = function($scope, $resource, configService, ngTableParams, $filter, $uibModal, toaster){
 
-	var request = $resource(configService.API + '/request/:requestId', null, { 'update': {method: 'PUT'} });
+	var Request = $resource(configService.API + '/request/:requestId', null, { 'update': {method: 'PUT'} });
+	var Engines = $resource(configService.API + '/engines');
+
+	$scope.engines = Engines.query();
 	
 	$scope.tableParams  = new ngTableParams({
 		page: 1,
 		count: configService.COUNT,
 		sorting: {
 			date : 'desc'
-		},
+		}
 	}, {
 		getData: function ($defer, params) {
-			request.query(function(data){
-				var searchedData = searchData(data);
+			Request.query(function(data){
+				searchedData = $filter('filter')(data,$scope.searchText);
+				searchedData = $filter('filter')(data,$scope.showEngine);
+				searchedData = params.sorting ? $filter('orderBy')(searchedData, params.orderBy()) : searchedData;
+				$data = searchedData.slice((params.page() - 1) * params.count(), params.page() * params.count());
+				
 				params.total(searchedData.length);
-				$scope.patients = searchedData.slice((params.page() - 1) * params.count(), params.page() * params.count());
-				$defer.resolve($scope.patients); 
+				$defer.resolve($data);
 			});
-		},
-		$scope: { $data: {} }
-	});
+		}
+	});	
 
 	$scope.$watch("searchText", function () {
 		$scope.tableParams.reload();
 	});
 
-	var searchData = function(usersData){
-		if($scope.searchText)
-			return $filter('filter')(usersData,$scope.searchText);
-		return usersData;		
+	$scope.changeEngine = function(){
+		$scope.tableParams.reload();
 	}
-
-	$scope.tableParams.settings().$scope = $scope;
 
 	$scope.expend = function(item, index){
 		var Instance = $uibModal.open({
@@ -52,11 +53,11 @@ module.exports = function($scope, $resource, configService, ngTableParams, $filt
 		});
 	}
 
-	 $scope.stop = function(e){
-        e.stopPropagation();
-    }
+	$scope.stop = function(e){
+		e.stopPropagation();
+	}
 
-    $scope.save = function(d, r){
+	$scope.save = function(d, r){
 
 		var newDate = d.dateEnd.split('/');
 
@@ -66,11 +67,11 @@ module.exports = function($scope, $resource, configService, ngTableParams, $filt
 
 		var date = new Date(''+year+'-'+month+'-'+day+' 05:00').toISOString()
 
-    	request.update({requestId:d._id}, {dateEnd: date}, function(data){
+		Request.update({requestId:d._id}, {dateEnd: date}, function(data){
 			$scope.tableParams.data.splice(r, 1);
 		});
 
-    }
+	}
 
 
 };

@@ -6,6 +6,22 @@
 }
 */
 
+.export {
+	border: 1px solid black;
+	font-size: 16px;
+	text-decoration: none;
+	color: black;
+}
+
+.big-checkbox {
+	font-size : 18px;
+	padding-right: 20px;
+	padding-top: 3px;
+}
+.big-checkbox > input {
+	width: 18px; height: 18px;
+}
+
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
 
 #login-logo{
