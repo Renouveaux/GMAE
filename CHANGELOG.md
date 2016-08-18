@@ -11,8 +11,6 @@ Tous les changements notable pour ce projet sont documentés dans ce fichier.
 
 ### [2.1.2] - 2016-06-30
 
-
-
 ### [2.1.1] - 2016-06-29
 #### Changed
  - Mise à jour de la version bootstrap. Meilleur réactivité de l'UI
