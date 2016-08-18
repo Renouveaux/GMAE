@@ -16,7 +16,7 @@ module.exports = function($scope, $resource, configService, ngTableParams, $filt
 		getData: function ($defer, params) {
 			Request.query(function(data){
 				searchedData = $filter('filter')(data,$scope.searchText);
-				searchedData = $filter('filter')(data,$scope.showEngine);
+				searchedData = $filter('filter')(searchedData,$scope.showEngine);
 				searchedData = params.sorting ? $filter('orderBy')(searchedData, params.orderBy()) : searchedData;
 				$data = searchedData.slice((params.page() - 1) * params.count(), params.page() * params.count());
 				
@@ -26,9 +26,9 @@ module.exports = function($scope, $resource, configService, ngTableParams, $filt
 		}
 	});	
 
-	$scope.$watch("searchText", function () {
+	$scope.$watch("searchText", throttle(function (event) {
 		$scope.tableParams.reload();
-	});
+	}, 1500));
 
 	$scope.changeEngine = function(){
 		$scope.tableParams.reload();
@@ -71,6 +71,17 @@ module.exports = function($scope, $resource, configService, ngTableParams, $filt
 			$scope.tableParams.data.splice(r, 1);
 		});
 
+	}
+
+	function throttle(func, interval) {
+		var lastCall = 0;
+		return function() {
+			var now = Date.now();
+			if (lastCall + interval < now) {
+				lastCall = now;
+				return func.apply(this, arguments);
+			}
+		};
 	}
 
 
