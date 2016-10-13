@@ -1,0 +1,44 @@
+    <div id="print-content">
+        <div class="modal-header text-center">
+            <h2>{{engine.engineProperties.model}} #{{engine.label}} ---- HOUSSE {{slipcover.label}}</h2>
+        </div>
+
+        <div class="media push clearfix">
+
+            <div class="col-xs-12">
+                <div class="col-xs-6">
+                    <p><em>Patient :</em> <b>{{data.patients.civility}} {{data.patients.name | uppercase}}</b></p>
+                    <p><em>Braden :</em> <b>{{data.patients.patientData[0].braden}}</b></p>
+                </div>
+
+                <div class="col-xs-6">
+                    <p><em>Demandeur :</em> <b>{{data.users.lastname | uppercase}} {{data.users.name}}</b></p>
+                    <p><em>Date de la demande :</em> <b>{{data.date | date:"dd/MM/yyyy"}} - {{data.date | date:"HH'H'mm"}}</b></p>
+                </div>
+            </div>
+
+            <div class="col-xs-12">
+                <div class="media push clearfix">
+                    <div class="wpb_alert">
+                        <h4>Note pour le retour du moteur : </h4>
+                        <p>Merci de verfier que les numéros présents sur le moteur, le matelas et la caisse correspondent bien !</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="media push clearfix">
+                <div class="jumbotron text-center">
+                    <h1>{{data.patients.patientData[0].services.name | uppercase}} -- {{data.patients.patientData[0].room}}</h1>
+                </div>
+        </div>
+
+
+        <div class="modal-footer  hidden-print">  
+            <button class="btn btn-info" ng-click="print()">IMPRIMER</button>
+        </div>
+
+
+    </div>
