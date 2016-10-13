@@ -20783,3 +20783,31 @@ table.sortable > thead th:hover:not([data-defaultsort=disabled]) {
 table.sortable > thead th div.mozilla {
   position: relative;
 }
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #print-content * {
+    visibility: visible;
+    overflow: visible;
+  }
+  #inner-container * {
+    display: none;
+  }
+  .modal {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0;
+    padding: 0;
+    min-height: 550px;
+    visibility: visible;
+    /**Remove scrollbar for printing.**/
+    overflow: visible !important;
+  }
+  .modal-dialog {
+    visibility: visible !important;
+    /**Remove scrollbar for printing.**/
+    overflow: visible !important;
+  }
+}

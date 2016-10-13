@@ -2,6 +2,12 @@ module.exports = function($scope, configService, $resource, $http, highchartsNG)
 
 	var getRateYear = $resource(configService.API + '/statistics/rate');
 	var getStatsYear = $resource(configService.API + '/statistics/request');
+	var getServiceDivision = $resource(configService.API + '/statistics/division');
+
+
+	getServiceDivision.query({year: 2016}, function(d){
+		console.log(d);
+	});
 
 	$scope.year = ""+new Date().getFullYear()-1+"";
 	var dayByYear = "";

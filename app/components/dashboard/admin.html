@@ -34,7 +34,7 @@
 			</div>
 		</div>
 
-		<ul class="nav-dash">
+		<ul class="nav-dash hidden-xs">
 			<li>
 				<a href="javascript:void(0)" uib-tooltip="Ajouter une demande" class="animation-fadeIn" ng-click="createRequest()">
 					<i class="fa fa-plus"></i>
@@ -200,7 +200,7 @@
 								<td class="hidden-xs hidden-sm hidden-md" style="font-size: 13px;" data-title="'Service'">{{item.patients.patientData[0].services.name}}</td>
 								<td data-title="'Chambre'">
 									<span class="label label-info">{{item.patients.patientData[0].room}}</span>
-									</td>
+								</td>
 								<td data-title="'Status'" ><span class="badge badge-{{item.states.style}}">&nbsp;</span></td>
 							</tr>
 						</tbody>
@@ -249,13 +249,14 @@
 			</div>
 		</div>
 
-		<ul class="nav-dash" ng-if="userPrivilege >= '4'">
+		<ul class="nav-dash hidden-xs" ng-if="userPrivilege >= '4'">
 			<li>
 				<a uib-tooltip="Ajouter d'une demande complete" class="animation-fadeIn" href="#/createRequest">
 					<i class="fa fa-retweet"></i>
 				</a>
 			</li>
 		</ul>
+		
 
 
 	</div>

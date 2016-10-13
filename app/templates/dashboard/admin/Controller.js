@@ -1,8 +1,9 @@
-module.exports = function($scope, $uibModalInstance, data, $resource, configService, Upload, $filter, toaster, socketService){
+module.exports = function($scope, $uibModalInstance, $uibModal, data, $resource, configService, Upload, $filter, toaster, socketService){
 
 	var properties = $resource(configService.API + '/engines/properties');
 	var Engines = $resource(configService.API + '/engines/:idEngine', null, { 'update': {method: 'PUT'} });
-	var Slipcovers = $resource(configService.API + '/slipcovers/:idSlipcover', null, { 'update': {method: 'PUT'} });
+	var EnginesData = $resource(configService.API + '/engines/filter/:search', null, { 'update': {method: 'PUT'} });
+	var Slipcovers = $resource(configService.API + '/slipcovers/:id', null, { 'update': {method: 'PUT'} });
 	var Request = $resource(configService.API + '/request/:requestId', null, { 'update': {method: 'PUT'} });
 	var Hire = $resource(configService.API + '/hire/:hireId', null, { 'update': {method: 'PUT'} });
 	var Renters = $resource(configService.API + '/renters');
@@ -66,8 +67,35 @@ module.exports = function($scope, $uibModalInstance, data, $resource, configServ
 	}
 
 	$scope.saveAssign = function(){
-		Request.update({requestId:data._id}, {state: '5', value: $scope.modalAssignInfo}, function(data){
+		Request.update({requestId:data._id}, {state: '5', value: $scope.modalAssignInfo}, function(result){
 			$uibModalInstance.close();
+
+			var enginesLabel = EnginesData.get({search : $scope.modalAssignInfo.engines}, function(res){
+				return res
+			});
+
+			var slipcover = Slipcovers.get({id : $scope.modalAssignInfo.slipcovers}, function(res){
+				return res;
+			});
+
+			var printInstance = $uibModal.open({
+				animation: true,
+				templateUrl: 'app/templates/dashboard/admin/print.html',
+				controller: function($scope ){
+					$scope.engine = enginesLabel;
+					$scope.slipcover = slipcover;
+					$scope.data = data;
+					$scope.print = function(){
+						window.print();
+					}
+				},
+				resolve: {
+					data: function(){
+						return this
+					}
+				}
+			});
+
 		});
 	}
 
@@ -146,6 +174,5 @@ module.exports = function($scope, $uibModalInstance, data, $resource, configServ
 	$scope.close = function () {
 		close(false);
 	};
-
 
 };
